@@ -5,6 +5,8 @@
 SRC_DIR	= .
 BIN_DIR = ../bin
 SHELL = /bin/sh
+FFTDIR = ../fftw3
+FFTLIB = $(FFTDIR)/lib/libfftw3.a
 
 #####
 # name (directory path) of compiler to be used
@@ -17,7 +19,7 @@ CXX        = g++
 # any extra compiler and linker options (see the compiler man page)
 #####
 
-CFLAGS     = -O3 -w -I../fftw
+CFLAGS     = -O3 -w -I$(FFTDIR)/include
 XFLAGS     = -O3 -w 
 LFLAGS     = -lm 
 
@@ -54,33 +56,21 @@ AUX     = lib_vio.c lib_pio.c lib_std.c lib_eul.c lib_pow.c \
 SITUS_EXEC = $(SITUS_C:.c=) $(SITUS_CPP:.cpp=)
 
 #####
-# FFTW files
-#####
-
-FFTWCFILES = $(wildcard ../fftw/*.c)
-FFTWOFILES = $(patsubst %.c,%.o,$(notdir $(FFTWCFILES)))
-
-vpath %.c $(SRC_DIR)
-vpath %.c ../fftw
-
-AR = ar
-ARFLAGS = cru
-RANLIB = ranlib
-
-#####
 # misc commands
 #####
 
 CD = cd
 RM = rm -f
 MV = mv
-OBJ_FILES = $(wildcard *.o) libfftw.a
+CP = cp
+MAKE = make
+OBJ_FILES = $(wildcard *.o)
 
 #####
 # main makefile rules
 #####
 
-default: $(SITUS_EXEC)
+default: all
 
 all: $(SITUS_EXEC)
 
@@ -129,8 +119,8 @@ qplasty:	qplasty.o  lib_err.o lib_std.o lib_pio.o
 collage:	collage.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o lib_vio.o 
 	$(CC) collage.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o $(LFLAGS) $(SMPLIB) -o collage
 
-colores:	colores.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o lib_vio.o libfftw.a
-	$(CC) colores.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o libfftw.a $(LFLAGS) $(SMPLIB) $(OMPLIB) -o colores
+colores:	colores.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o lib_vio.o $(FFTLIB)
+	$(CC) colores.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o $(FFTLIB) $(LFLAGS) $(SMPLIB) $(OMPLIB) -o colores
 
 matchpt:	matchpt.o lib_mpt.o 
 	$(CXX) $(CFLAGS) -c lib_err.c
@@ -161,22 +151,40 @@ volfltr:	volfltr.o lib_sba.o lib_svt.o
 	$(CXX) volfltr.o lib_sba.o lib_svt.o lib_vio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o $(LFLAGS) $(OMPLIB) $(SMPLIB) -o volfltr
 	$(RM) lib_vio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o 
 
-libfftw.a:	$(FFTWOFILES) 
-	$(AR) $(ARFLAGS) libfftw.a $(FFTWOFILES)
-	$(RANLIB) libfftw.a
+.PHONY:		clean veryclean
+
+FFTW3:		$(FFTLIB)
+
+$(FFTLIB):	
+	cd $(FFTDIR)/fftw-3.3.4 && \
+	./configure --prefix=`pwd`/../../fftw3 && \
+	$(MAKE) && $(MAKE) install
 
 install:
-	$(MV) $(SITUS_EXEC) $(BIN_DIR)
+	if ! test -d $(BIN_DIR); \
+	then \
+	  mkdir $(BIN_DIR); \
+	fi
+	$(CP) $(SITUS_EXEC) $(BIN_DIR)
 
 clean:
-	$(RM) $(OBJ_FILES)
-	$(MV) $(SITUS_EXEC) $(BIN_DIR)
+	$(RM) $(OBJ_FILES) $(SITUS_EXEC)
+	if test -e  $(FFTDIR)/Makefile; \
+	then \
+	  $(MAKE) -C $(FFTDIR)/fftw-3.3.4 clean; \
+	fi
 
-veryclean:
-	$(RM) $(OBJ_FILES)	
+veryclean:	clean
 	$(CD) $(BIN_DIR) && $(RM) $(SITUS_EXEC)
+	if test -e  $(FFTDIR)/Makefile; \
+	then \
+	  $(MAKE) -C $(FFTDIR)/fftw-3.3.4 distclean; \
+	fi
+	$(RM) -r $(FFTDIR)/lib $(FFTDIR)/bin $(FFTDIR)/include \
+		$(FFTDIR)/share
 
 .c.o:
 	$(CC) $(CFLAGS) $(SMP) $(OMP) -c $(SRC_DIR)/$<
+
 .cpp.o:
 	$(CXX) $(XFLAGS) $(SMP) $(OMP) -c $(SRC_DIR)/$<
