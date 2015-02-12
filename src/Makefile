@@ -149,14 +149,17 @@ install:
 
 clean:
 	$(RM) $(OBJ_FILES) $(SITUS_EXEC)
-	if test -e  $(FFTDIR)/Makefile; \
+	if test -e $(FFTDIR)/fftw-3.3.4/Makefile; \
 	then \
 	  $(MAKE) -C $(FFTDIR)/fftw-3.3.4 clean; \
 	fi
 
 veryclean:	clean
-	$(CD) $(BIN_DIR) && $(RM) $(SITUS_EXEC)
-	if test -e  $(FFTDIR)/Makefile; \
+	if test -d  $(BIN_DIR); \
+	then \
+	  $(CD) $(BIN_DIR) && $(RM) $(SITUS_EXEC); \
+	fi
+	if test -e  $(FFTDIR)/fftw-3.3.4/Makefile; \
 	then \
 	  $(MAKE) -C $(FFTDIR)/fftw-3.3.4 distclean; \
 	fi
