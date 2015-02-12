@@ -1,5 +1,11 @@
-/* header file for lib_err.c */
+#ifndef __SITUS_LIB_ERR
+#define __SITUS_LIB_ERR
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* header file for lib_err.c */
 void error_IO_files_6(char *);
 void error_IO_files_5(char *, char *, char *, char *);
 void error_IO_files_4(char *, char *, char *, char *);
@@ -80,3 +86,9 @@ void error_psi_euler_range_above_360(int, char *);
 void error_theta_euler_range_above_180(int, char *);
 void error_phi_euler_range_above_360(int, char *);
 void error_sba(int, char *);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

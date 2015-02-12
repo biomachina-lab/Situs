@@ -11,8 +11,8 @@
 * See legal statement for terms of distribution                      *
 *********************************************************************/
 
-#ifndef __LIB_SVT
-#define __LIB_SVT
+#ifndef __SITUS_LIB_SVT
+#define __SITUS_LIB_SVT
 
 #include <vector>
 #include <math.h>
@@ -8539,8 +8539,6 @@ void svt_gacylinder<T>::writeSolutions(svt_population<T> &oPop, unsigned int iWr
     
     }
 }
-
-
 
 #endif
 

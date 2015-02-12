@@ -11,8 +11,8 @@
 * See legal statement for terms of distribution                      *
 *********************************************************************/
 
-#ifndef __MATCHPOINT
-#define __MATCHPOINT
+#ifndef __SITUS_LIB_MPT
+#define __SITUS_LIB_MPT
 
 ///////////////////////////////////////////////////////////////////////////////
 // INCLUDES AND CONSTANTS

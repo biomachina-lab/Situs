@@ -1,3 +1,10 @@
+#ifndef __SITUS_LIB_VIO
+#define __SITUS_LIB_VIO
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* header file for lib_vio.c */
 void read_vol (char *, double *, double *, double *, double *, unsigned *, unsigned *, unsigned *, double **);
 void write_vol (char *, double, double, double, double, unsigned, unsigned, unsigned, double *);
@@ -33,3 +40,9 @@ void interpolate_skewed_map_to_cubic (double **, unsigned *, unsigned *, unsigne
 void write_xplor (char *, double, double, double, double, unsigned, unsigned, unsigned, double *);
 void write_mrc (int, char *, double, double, double, double, unsigned, unsigned, unsigned, double *);
 void write_spider (char *, double, double, double, double, unsigned, unsigned, unsigned, double *);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
