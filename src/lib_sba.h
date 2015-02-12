@@ -11,8 +11,8 @@
 * See legal statement for terms of distribution                      *
 *********************************************************************/
 
-#ifndef __LIB_SVTBASICS
-#define __LIB_SVTBASICS
+#ifndef __SITUS_LIB_SVTBASICS
+#define __SITUS_LIB_SVTBASICS
 
 #include "situs.h"
 #include "lib_err.h"

@@ -123,33 +123,13 @@ colores:	colores.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o l
 	$(CC) colores.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o $(FFTLIB) $(LFLAGS) $(SMPLIB) $(OMPLIB) -o colores
 
 matchpt:	matchpt.o lib_mpt.o 
-	$(CXX) $(CFLAGS) -c lib_err.c
-	$(CXX) $(CFLAGS) -c lib_vwk.c
-	$(CXX) $(CFLAGS) -c lib_vec.c
-	$(CXX) $(CFLAGS) -c lib_vio.c
-	$(CXX) $(CFLAGS) -c lib_pio.c
-	$(CXX) $(CFLAGS) -c lib_std.c
 	$(CXX) matchpt.o lib_mpt.o lib_vio.o lib_pio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o $(LFLAGS) $(OMPLIB) -o matchpt
-	$(RM) lib_mpt.o lib_vio.o lib_pio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o
 
 voltrac:	voltrac.o lib_sba.o lib_svt.o	
-	$(CXX) $(XFLAGS) -c lib_err.c
-	$(CXX) $(XFLAGS) -c lib_vwk.c
-	$(CXX) $(XFLAGS) -c lib_vec.c	
-	$(CXX) $(XFLAGS) -c lib_vio.c
-	$(CXX) $(XFLAGS) -c lib_pio.c
-	$(CXX) $(XFLAGS) -c lib_std.c	
 	$(CXX) voltrac.o lib_sba.o lib_svt.o lib_vio.o lib_pio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o $(LFLAGS) $(OMPLIB) $(SMPLIB) -o voltrac
-	$(RM) lib_vio.o lib_pio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o 
 
 volfltr:	volfltr.o lib_sba.o lib_svt.o	
-	$(CXX) $(XFLAGS) -c lib_err.c
-	$(CXX) $(XFLAGS) -c lib_vwk.c
-	$(CXX) $(XFLAGS) -c lib_vec.c	
-	$(CXX) $(XFLAGS) -c lib_vio.c
-	$(CXX) $(XFLAGS) -c lib_std.c	
 	$(CXX) volfltr.o lib_sba.o lib_svt.o lib_vio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o $(LFLAGS) $(OMPLIB) $(SMPLIB) -o volfltr
-	$(RM) lib_vio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o 
 
 .PHONY:		clean veryclean
 

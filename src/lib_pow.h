@@ -1,3 +1,6 @@
+#ifndef __SITUS_LIB_POW
+#define __SITUS_LIB_POW
+
 /* header file for lib_pow.c */
 
 #define SWAPPING(_a,_b,_type) \
@@ -8,6 +11,10 @@
   (_a) = (_b);\
   (_b) = _tmp;\
 }
+
+#ifdef __cplusplus
+#extern "C" {
+#endif
 
 void powell(int *,double *,double *,int,
             double(*)(double *),
@@ -83,3 +90,8 @@ void powell_line_minimize_r (double *,double *,int,double *,
                                double (*)(double *,POWSCR *),POWSCR *);
 void *xmalloc(size_t n);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif

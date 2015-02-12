@@ -23,11 +23,18 @@
  * restarted when work appears.)
  */
 
+#ifndef __SITUS_LIB_SMP
+#define __SITUS_LIB_SMP
+
 #include <stdarg.h>
 #include <errno.h>
 
 #ifdef _SMP_
 #include <pthread.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 typedef struct Powell_Args {
@@ -84,3 +91,9 @@ extern void workq_add (workq_t *wq, void (*engine) (void *arg), void *data);
 inline void print(char *fmt, ...);
 inline void error(char *fmt, ...);
 inline void *xmalloc(size_t n);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif 

@@ -1,3 +1,10 @@
+#ifndef __SITUS_LIB_VWK
+#define __SITUS_LIB_VWK
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* header file for lib_vwk.c */
 unsigned long gidz_cube (int, int, int, unsigned);
 unsigned long gidz_general (int, int, int, unsigned, unsigned);
@@ -47,3 +54,9 @@ void convolve_kernel_outside (double **, unsigned *, unsigned *, unsigned *, dou
 			      double, double, double, double, double *, unsigned);
 int print_histogram (unsigned *, unsigned *, unsigned *, double **, int);
 void print_diff_histogram (unsigned *, unsigned *, unsigned *, double **, int);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
