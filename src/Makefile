@@ -140,7 +140,7 @@ $(FFTLIB):
 	./configure --prefix=`pwd`/../../fftw3 && \
 	$(MAKE) && $(MAKE) install
 
-install:
+install:	$(SITUS_EXEC)
 	if ! test -d $(BIN_DIR); \
 	then \
 	  mkdir $(BIN_DIR); \
