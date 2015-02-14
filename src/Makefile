@@ -136,9 +136,13 @@ volfltr:	volfltr.o lib_sba.o lib_svt.o
 FFTW3:		$(FFTLIB)
 
 $(FFTLIB):	
-	cd $(FFTDIR)/fftw-3.3.4 && \
-	./configure --prefix=`pwd`/../../fftw3 && \
-	$(MAKE) && $(MAKE) install
+	if ! test -e $(FFTDIR)/fftw-3.3.4/Makefile; \
+	then \
+	  cd $(FFTDIR)/fftw-3.3.4 && \
+	  ./configure --prefix=`pwd`/../../fftw3; \
+	  touch doc/fftw3.info*; \
+	fi
+	$(MAKE) -C $(FFTDIR)/fftw-3.3.4 install
 
 install:	$(SITUS_EXEC)
 	if ! test -d $(BIN_DIR); \
