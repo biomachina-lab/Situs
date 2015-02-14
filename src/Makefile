@@ -5,9 +5,18 @@
 SRC_DIR	= .
 BIN_DIR = ../bin
 SHELL = /bin/sh
+
+
+
+#####
+# FFTW Definitions
+#####
+
 FFTDIR = ../fftw3
 FFTLIB = $(FFTDIR)/lib/libfftw3.a
 FFTWREV = fftw-3.3.4
+FFTWMAKEFILE = $(FFTDIR)/$(FFTWREV)/Makefile
+
 
 #####
 # name (directory path) of compiler to be used
@@ -132,18 +141,17 @@ voltrac:	voltrac.o lib_sba.o lib_svt.o
 volfltr:	volfltr.o lib_sba.o lib_svt.o	
 	$(CXX) volfltr.o lib_sba.o lib_svt.o lib_vio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o $(LFLAGS) $(OMPLIB) $(SMPLIB) -o volfltr
 
-.PHONY:		clean veryclean
+.PHONY:		clean veryclean FFTW3
 
 FFTW3:		$(FFTLIB)
 
-$(FFTLIB):	
-	if ! test -e $(FFTDIR)/$(FFTWREV)/Makefile; \
-	then \
-	  cd $(FFTDIR)/$(FFTWREV) && \
-	  ./configure --prefix=`pwd`/../../fftw3; \
-	  touch doc/fftw3.info*; \
-	fi
+$(FFTLIB):	$(FFTWMAKEFILE)	
 	$(MAKE) -C $(FFTDIR)/$(FFTWREV) install
+
+$(FFTWMAKEFILE):	$(FFTDIR)/$(FFTWREV)/Makefile.in
+	cd $(FFTDIR)/$(FFTWREV) && \
+	./configure --prefix=`pwd`/../../fftw3; \
+	touch doc/fftw3.info*; \
 
 install:	$(SITUS_EXEC)
 	if ! test -d $(BIN_DIR); \
