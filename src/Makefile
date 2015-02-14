@@ -7,6 +7,7 @@ BIN_DIR = ../bin
 SHELL = /bin/sh
 FFTDIR = ../fftw3
 FFTLIB = $(FFTDIR)/lib/libfftw3.a
+FFTWREV = fftw-3.3.4
 
 #####
 # name (directory path) of compiler to be used
@@ -136,13 +137,13 @@ volfltr:	volfltr.o lib_sba.o lib_svt.o
 FFTW3:		$(FFTLIB)
 
 $(FFTLIB):	
-	if ! test -e $(FFTDIR)/fftw-3.3.4/Makefile; \
+	if ! test -e $(FFTDIR)/$(FFTWREV)/Makefile; \
 	then \
-	  cd $(FFTDIR)/fftw-3.3.4 && \
+	  cd $(FFTDIR)/$(FFTWREV) && \
 	  ./configure --prefix=`pwd`/../../fftw3; \
 	  touch doc/fftw3.info*; \
 	fi
-	$(MAKE) -C $(FFTDIR)/fftw-3.3.4 install
+	$(MAKE) -C $(FFTDIR)/$(FFTWREV) install
 
 install:	$(SITUS_EXEC)
 	if ! test -d $(BIN_DIR); \
@@ -153,9 +154,9 @@ install:	$(SITUS_EXEC)
 
 clean:
 	$(RM) $(OBJ_FILES) $(SITUS_EXEC)
-	if test -e $(FFTDIR)/fftw-3.3.4/Makefile; \
+	if test -e $(FFTDIR)/$(FFTWREV)/Makefile; \
 	then \
-	  $(MAKE) -C $(FFTDIR)/fftw-3.3.4 clean; \
+	  $(MAKE) -C $(FFTDIR)/$(FFTWREV) clean; \
 	fi
 
 veryclean:	clean
@@ -163,9 +164,9 @@ veryclean:	clean
 	then \
 	  $(CD) $(BIN_DIR) && $(RM) $(SITUS_EXEC); \
 	fi
-	if test -e  $(FFTDIR)/fftw-3.3.4/Makefile; \
+	if test -e  $(FFTDIR)/$(FFTWREV)/Makefile; \
 	then \
-	  $(MAKE) -C $(FFTDIR)/fftw-3.3.4 distclean; \
+	  $(MAKE) -C $(FFTDIR)/$(FFTWREV) distclean; \
 	fi
 	$(RM) -r $(FFTDIR)/lib $(FFTDIR)/bin $(FFTDIR)/include \
 		$(FFTDIR)/share
