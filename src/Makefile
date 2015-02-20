@@ -61,7 +61,7 @@ SITUS_CPP = matchpt.cpp voltrac.cpp volfltr.cpp
 
 AUX     = lib_vio.c lib_pio.c lib_std.c lib_eul.c lib_pow.c \
           lib_pwk.c lib_rnd.c lib_vec.c lib_vwk.c lib_tim.c lib_err.c \
-	  lib_smp.c lib_mpt.cpp lib_svt.cpp lib_sba.cpp
+	  lib_smp.c lib_cvq.c lib_mpt.cpp lib_svt.cpp lib_sba.cpp 
 
 SITUS_EXEC = $(SITUS_C:.c=) $(SITUS_CPP:.cpp=)
 
@@ -99,14 +99,14 @@ volaver:	volaver.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o
 volmult:	volmult.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o  
 	$(CC) volmult.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o $(LFLAGS) -o volmult
 
-qvol:		qvol.o lib_err.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_vio.o 
-	$(CC) qvol.o lib_vio.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_err.o $(LFLAGS) -o qvol
+qvol:		qvol.o lib_err.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_vio.o lib_cvq.o
+	$(CC) qvol.o lib_vio.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_err.o lib_cvq.o $(LFLAGS) -o qvol
 
 voledit:	voledit.o lib_err.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o  
 	$(CC) voledit.o lib_vio.o lib_std.o lib_vwk.o lib_vec.o lib_err.o $(LFLAGS) -o voledit
 
-qpdb:	qpdb.o lib_err.o lib_vio.o lib_pwk.o lib_std.o lib_vwk.o lib_vec.o lib_eul.o lib_rnd.o lib_vio.o 
-	$(CC) qpdb.o lib_err.o lib_std.o lib_pio.o lib_pwk.o lib_vwk.o lib_vec.o lib_vio.o lib_eul.o lib_rnd.o $(LFLAGS) -o qpdb
+qpdb:	qpdb.o lib_err.o lib_vio.o lib_pwk.o lib_std.o lib_vwk.o lib_vec.o lib_eul.o lib_rnd.o lib_vio.o lib_cvq.o
+	$(CC) qpdb.o lib_err.o lib_std.o lib_pio.o lib_pwk.o lib_vwk.o lib_vec.o lib_vio.o lib_eul.o lib_rnd.o lib_cvq.o $(LFLAGS) -o qpdb
 
 pdb2sax:	pdb2sax.o lib_err.o lib_pio.o lib_std.o
 	$(CC) pdb2sax.o lib_err.o lib_std.o lib_pio.o $(LFLAGS) -o pdb2sax
