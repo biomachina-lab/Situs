@@ -82,7 +82,7 @@ OBJ_FILES = $(wildcard *.o)
 
 default: all
 
-all: $(SITUS_EXEC)
+all: FFTW3 $(SITUS_EXEC)
 
 map2map:	map2map.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o 
 	$(CC) map2map.o lib_vio.o lib_vwk.o lib_vec.o  lib_std.o lib_err.o $(LFLAGS) -o map2map

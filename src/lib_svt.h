@@ -5801,7 +5801,7 @@ T svt_gacylinder<T>::initIndividual( )
         oInd.setTurns ( m_iTemplateRepeats );
         oInd.setHeightTurn( m_fDistBetweenRepeats );
     
-    makeValid( &oInd );
+    this->makeValid( &oInd );
     updateFitness( &oInd );
         m_iNoIndInInit++;
     }while ( oInd.getFitness() < 1e-6 || this->isInTabuReg(&oInd) );
@@ -7163,7 +7163,7 @@ Real64 svt_gacylinder<T>::getLambda()
 template<class T>
 svt_ga_mat svt_gacylinder<T>::getTrans(T* pInd)
 {
-    makeValid(pInd);
+    this->makeValid(pInd);
 
     //translation
     svt_ga_vec oTransl;
@@ -7469,7 +7469,7 @@ void svt_gacylinder<T>::refineTransl(T* pInd)
                     pNewInd->getGene(1)<=1 && pNewInd->getGene(1)>=0 && 
                     pNewInd->getGene(2)<=1 && pNewInd->getGene(2)>=0)                
                 {
-                    makeValid(pNewInd);
+                    this->makeValid(pNewInd);
                     updateFitness(pNewInd); 
                     
                     if (fMax < pNewInd->getFitness())
@@ -7564,7 +7564,7 @@ void svt_gacylinder<T>::refineTranslOnSphere(T* pInd, svt_vector4<Real64> *pCent
             if (pNewInd->getGene(0)<=1 && pNewInd->getGene(0)>=0 && pNewInd->getGene(1)<=1 && pNewInd->getGene(1)>=0 && pNewInd->getGene(2)<=1 && pNewInd->getGene(2)>=0)
             {
 
-                makeValid(pNewInd);
+                this->makeValid(pNewInd);
 
                 updateFitness(pNewInd);
 
@@ -7934,7 +7934,7 @@ void svt_gacylinder<T>::mutationCauchy(int iInd, int iRandIndex, Real64 fRatio)
     //bring the gene back into the 0 - 1 range
     this->m_oNextPop[iInd].setGene( iRandIndex, fNewGene );
 
-    makeValid(&this->m_oNextPop[iInd]);
+   this-> makeValid(&this->m_oNextPop[iInd]);
 };
 
 /**

@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include <dirent.h>
+#include <unistd.h>
 
 #ifndef SITUS_H
 #define SITUS_H

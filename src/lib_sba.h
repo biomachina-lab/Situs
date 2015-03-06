@@ -15395,7 +15395,7 @@ Real64 svt_point_cloud_pdb<T>::rmsd( svt_point_cloud_pdb<T>& rOlig, bool bAlign,
     // least-square fit
     svt_matrix4<Real64> oMat;
     if (bKearsley)
-	oMat = kearsley( *this, rOlig );
+	oMat = this->kearsley( *this, rOlig );
 
     // now calculate the actual rmsd
     unsigned int iSizeSelection=0;
