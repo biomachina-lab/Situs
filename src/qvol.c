@@ -18,7 +18,7 @@
 #include "lib_vio.h"
 #include "lib_vwk.h"
 #include "lib_rnd.h"
-#include "lib_cvq.h"
+#include "vqdefs.h"
 
 #define NCONSTR 1000                 /* max. number of constraints  */
 #define SEED 7566                    /* for random number generator */
@@ -1209,47 +1209,47 @@ void alloc_codebook_storage(unsigned int n)
   MAXDT = NNMAX * MAXCYCLE;
 
   /* Following are Rseq3[NNMAX] */
-  wglob = (Rseq3 *)alloc_qvect(NNMAX, sizeof(Rseq3));
-  average = (Rseq3 *)alloc_qvect(NNMAX, sizeof(Rseq3));
-  wlast = (Rseq3 *)alloc_qvect(NNMAX, sizeof(Rseq3));
+  wglob = (Rseq3 *)alloc_vect(NNMAX, sizeof(Rseq3));
+  average = (Rseq3 *)alloc_vect(NNMAX, sizeof(Rseq3));
+  wlast = (Rseq3 *)alloc_vect(NNMAX, sizeof(Rseq3));
 
   /* Following are Rseq3[MAXDT] */
-  vecdata = (Rseq3 *)alloc_qvect(MAXDT, sizeof(Rseq3));
+  vecdata = (Rseq3 *)alloc_vect(MAXDT, sizeof(Rseq3));
 
   /* Following are int[NNMAX] */
-  tk = (int *)alloc_qvect(NNMAX, sizeof(int));
-  order = (int *)alloc_qvect(NNMAX, sizeof(int));
-  listcount = (int *)alloc_qvect(NNMAX, sizeof(int));
+  tk = (int *)alloc_vect(NNMAX, sizeof(int));
+  order = (int *)alloc_vect(NNMAX, sizeof(int));
+  listcount = (int *)alloc_vect(NNMAX, sizeof(int));
 
   /* Following are int[NNMAX][MAXDT] */
-  list = alloc_qmat(NNMAX, MAXDT, sizeof(int));
+  list = alloc_mat(NNMAX, MAXDT, sizeof(int));
 
   /* Following are double[NNMAX] */
-  effrad = alloc_qvect(NNMAX, sizeof(double));
-  mcl = alloc_qvect(NNMAX, sizeof(double));
-  rmsd = alloc_qvect(NNMAX, sizeof(double));
-  dist = alloc_qvect(NNMAX, sizeof(double));
+  effrad = alloc_vect(NNMAX, sizeof(double));
+  mcl = alloc_vect(NNMAX, sizeof(double));
+  rmsd = alloc_vect(NNMAX, sizeof(double));
+  dist = alloc_vect(NNMAX, sizeof(double));
 }
 
 /*====================================================================*/
 void free_codebook_storage()
 {
-  free_qvect_and_zero_ptr(&wglob);
-  free_qvect_and_zero_ptr(&average);
-  free_qvect_and_zero_ptr(&wlast);
+  free_vect_and_zero_ptr(&wglob);
+  free_vect_and_zero_ptr(&average);
+  free_vect_and_zero_ptr(&wlast);
 
-  free_qvect_and_zero_ptr(&vecdata);
+  free_vect_and_zero_ptr(&vecdata);
 
-  free_qvect_and_zero_ptr(&tk);
-  free_qvect_and_zero_ptr(&order);
-  free_qvect_and_zero_ptr(&listcount);
+  free_vect_and_zero_ptr(&tk);
+  free_vect_and_zero_ptr(&order);
+  free_vect_and_zero_ptr(&listcount);
 
-  free_qmat_and_zero_ptr(&list);
+  free_mat_and_zero_ptr(&list);
 
-  free_qvect_and_zero_ptr(&effrad);
-  free_qvect_and_zero_ptr(&mcl);
-  free_qvect_and_zero_ptr(&rmsd);
-  free_qvect_and_zero_ptr(&dist);
+  free_vect_and_zero_ptr(&effrad);
+  free_vect_and_zero_ptr(&mcl);
+  free_vect_and_zero_ptr(&rmsd);
+  free_vect_and_zero_ptr(&dist);
 }
 
 /*====================================================================*/

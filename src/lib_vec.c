@@ -5,7 +5,7 @@
 * (c) Pablo Chacon, John Heumann,  and Willy Wriggers, 2001-2015     *
 **********************************************************************
 *                                                                    *
-* Creating, resetting, copying arrays and other data structures.     * 
+* Creating, resetting, copying arrays and other data structures.     *
 *                                                                    *
 **********************************************************************
 * See legal statement for terms of distribution                      *
@@ -15,67 +15,108 @@
 #include "lib_vec.h"
 #include "lib_err.h"
 
+/****** Following routines are for vectors and arrays of doubles ******/
+
 /*====================================================================*/
-void zero_vect(double *vect, unsigned long len) {
-  unsigned long i;
-  for(i=0;i<len;++i) vect[i] = 0.0;
+void zero_vect(double *vect, unsigned long len)
+{
+  memset(vect, 0, len * sizeof(double));
 }
 
 /*====================================================================*/
-void do_vect(double **vect, unsigned long len) {
-  char *program = "lib_vec";
-  *vect = (double *) malloc(len*sizeof(double));
-  if (*vect == NULL) {
-    error_memory_allocation(18010, program);
-  }
-  zero_vect(*vect,len);
+void do_vect(double **pvect, unsigned long len)
+{
+  *pvect = (double *) alloc_vect(len,  sizeof(double));
 }
 
 /*====================================================================*/
-void zero_mat(double **mat,unsigned long len_i,unsigned long len_j) {
-  unsigned long i;
-  for(i=0;i<len_i;++i) zero_vect(mat[i],len_j);
+void zero_mat(double **mat, unsigned long len_i, unsigned long len_j)
+{
+  memset(mat[0], 0, len_i * len_j * sizeof(double));
 }
 
 /*====================================================================*/
-void do_mat(double ***pmat,unsigned long len_i,unsigned long len_j) {
-  unsigned long i;
-  char *program = "lib_vec";
-  
-  *pmat = (double **) malloc(len_i*sizeof(double *));
-  if (*pmat == NULL) {
-    error_memory_allocation(18020, program);
-  }
-  for(i=0;i<len_i;i++) do_vect(&((*pmat)[i]),len_j);
+void do_mat(double ***pmat, unsigned long len_i, unsigned long len_j)
+{
+  *pmat = (double **) alloc_mat(len_i, len_j, sizeof(double));
 }
 
 /*====================================================================*/
-void cp_vect(double **vect1,double **vect2,unsigned long len) {
-  memcpy(*vect1,*vect2, len*sizeof(double));
+void cp_vect(double **vect1, double **vect2, unsigned long len)
+{
+  memcpy(*vect1, *vect2, len * sizeof(double));
 }
 
 /*====================================================================*/
 /* destroys memory allocated to vect2 after copying */
-void cp_vect_destroy(double **vect1,double **vect2,unsigned long len) {
-  if (*vect1)
-    free(*vect1); 
-  do_vect(vect1,len); 
-  cp_vect(vect1,vect2,len); 
-  free(*vect2);
+void cp_vect_destroy(double **pvect1, double **pvect2, unsigned long len)
+{
+  if (*pvect1)
+    free(*pvect1);
+  do_vect(pvect1, len);
+  cp_vect(pvect1, pvect2, len);
+  free(*pvect2);
 }
 
- /*====================================================================*/
-void add_scaled_vect(double *to_vect, double *from_vect, double scalar, unsigned long len) { 
+/*====================================================================*/
+void add_scaled_vect(double *to_vect, double *from_vect, double scalar, unsigned long len)
+{
   unsigned long i;
-  for(i=0;i<len;++i) to_vect[i] += scalar * from_vect[i];
+  for (i = 0; i < len; ++i)
+    to_vect[i] += scalar * from_vect[i];
 }
 
- /*====================================================================*/
-void free_vect_and_zero_ptr(double **vect) { 
-  if (*vect) {
-    free(*vect);
-    *vect = 0;
+/****** Following routines are for arbitrary vectors and arrays  ******/
+
+/*====================================================================*/
+void *alloc_vect(unsigned int n, size_t elem_size)
+{
+  void *pvect;
+
+  pvect = calloc(n, elem_size);
+  if (!pvect) {
+    error_memory_allocation(99901, "lib_cvq");
+  }
+
+  return pvect;
+}
+
+/*=============fs=======================================================*/
+void free_vect_and_zero_ptr(void **pvect)
+{
+  if (*pvect) {
+    free(*pvect);
+    *pvect = 0;
   }
 }
 
+/*====================================================================*/
+void **alloc_mat(unsigned int m, unsigned int n, size_t elem_size)
+{
+  unsigned int i;
+  void **pmat;
 
+  pmat = (void **)malloc(m * sizeof(void *));
+  if (!pmat) {
+    error_memory_allocation(99902, "lib_cvq");
+  }
+  pmat[0] = calloc(m * n, elem_size);
+  if (!pmat[0]) {
+    error_memory_allocation(99903, "lib_cvq");
+  }
+  for (i = 1; i < m; i++)
+    pmat[i] = pmat[i - 1] + n * elem_size;
+
+  return pmat;
+}
+
+/*====================================================================*/
+void free_mat_and_zero_ptr(void ***pmat)
+{
+  if (*pmat) {
+    if (**pmat)
+      free(**pmat);
+    free(*pmat);
+    *pmat = 0;
+  }
+}

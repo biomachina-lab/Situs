@@ -90,7 +90,6 @@ extern void workq_add (workq_t *wq, void (*engine) (void *arg), void *data);
 
 inline void print(char *fmt, ...);
 inline void error(char *fmt, ...);
-inline void *xmalloc(size_t n);
 
 #ifdef __cplusplus
 }

@@ -27,6 +27,11 @@
 *.out
 *.app
 
+# Eclipse project files
+.cproject
+.project
+.pkglist
+
 # Situs binaries (in both src and bin)
 **/collage
 **/colores

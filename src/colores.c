@@ -771,8 +771,8 @@ int main(int argc, char **argv)
 
       /* Prepare scratch space */
 
-      pow_scratch = (POWSCR *) xmalloc(sizeof(POWSCR));
-      pow_scratch->pdb = (PDB *) xmalloc(g_num_atoms * sizeof(PDB));
+      pow_scratch = (POWSCR *) alloc_vect(sizeof(POWSCR), 1);
+      pow_scratch->pdb = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
       for (q = 0; q < g_num_atoms; ++q) *(pow_scratch->pdb + q) = *(g_pdb_original + q);
       do_vect(&pow_scratch->phi_du, g_fftw_nvox_r2c);
       do_vect(&pow_scratch->phi_hi, g_fftw_nvox_r2c);
@@ -895,7 +895,7 @@ int main(int argc, char **argv)
 
     for (iter = 0; iter < g_num_explored; iter++) {
 
-      pow_args = (POWARG *) xmalloc(sizeof(POWARG));
+      pow_args = (POWARG *) alloc_vect(sizeof(POWARG), 1);
       pow_args->iter     = iter;
       pow_args->pow_init = pow_init;
 #ifdef _SMP_
@@ -1526,15 +1526,15 @@ static void powell_optimization(void *args)
 
   /* Prepare scratch space */
 
-  pow_scratch = (POWSCR *) xmalloc(sizeof(POWSCR));
-  pow_scratch->pdb = (PDB *) xmalloc(g_num_atoms * sizeof(PDB));
+  pow_scratch = (POWSCR *) alloc_vect(sizeof(POWSCR), 1);
+  pow_scratch->pdb = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
   for (q = 0; q < g_num_atoms; ++q) *(pow_scratch->pdb + q) = *(g_pdb_original + q);
   do_vect(&pow_scratch->phi_du, g_fftw_nvox_r2c);
   do_vect(&pow_scratch->phi_hi, g_fftw_nvox_r2c);
 
   /* Prepare result struct */
 
-  pow_results = (POWRES *) xmalloc(sizeof(POWRES));
+  pow_results = (POWRES *) alloc_vect(sizeof(POWRES), 1);
   pow_results->head = NULL;
   pow_results->last = NULL;
 

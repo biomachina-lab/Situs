@@ -6,14 +6,23 @@ extern "C" {
 #endif
 
 /* header file for lib_vec.c */
+
+/****** Following routines are for vectors and arrays of doubles ******/
 void zero_vect(double *, unsigned long);
 void do_vect(double **, unsigned long);
+
 void zero_mat(double **, unsigned long, unsigned long);
-void do_mat(double ***, unsigned long, unsigned long);
+void do_mat(double ** *, unsigned long, unsigned long);
+
 void cp_vect(double **, double **, unsigned long);
 void cp_vect_destroy(double **, double **, unsigned long);
 void add_scaled_vect(double *, double *, double, unsigned long);
-void free_vect_and_zero_ptr(double **);
+
+/****** Following routines are for arbitrary vectors and arrays ******/
+void *alloc_vect(unsigned int n, size_t elem_size);
+void free_vect_and_zero_ptr(void **);
+void **alloc_mat(unsigned int m, unsigned int n, size_t elem_size);
+void free_mat_and_zero_ptr(void ***);
 
 #ifdef __cplusplus
 }

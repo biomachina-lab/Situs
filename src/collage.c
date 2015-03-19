@@ -271,7 +271,7 @@ int main(int argc, char **argv)
 
     /* initialize some parameters */
     draw_line();
-    g_best_fit = (FIT *) xmalloc((g_num_parts)*sizeof(FIT));
+    g_best_fit = (FIT *) alloc_vect((g_num_parts), sizeof(FIT));
     for (i=0;i<g_num_parts;++i) {
       g_best_fit[i].pos[0] = 0.0;
       g_best_fit[i].pos[1] = 0.0;
@@ -310,8 +310,8 @@ int main(int argc, char **argv)
     if(g_pow_alg == 0 || (g_pow_alg == 3 && g_num_parts > 1)) {
       test_pow_method = 1;
       /* prepare scratch space */
-      pow_scratch = (POWSCR *) xmalloc(sizeof(POWSCR));
-      pow_scratch->pdb = (PDB *) xmalloc(g_num_atoms*sizeof(PDB));
+      pow_scratch = (POWSCR *) alloc_vect(sizeof(POWSCR), 1);
+      pow_scratch->pdb = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
       for (q=0;q<g_num_atoms;++q) *(pow_scratch->pdb+q)=*(g_pdb_original+q);
       do_vect(&pow_scratch->phi_du,g_nvox);
       do_vect(&pow_scratch->phi_hi,g_nvox);  
@@ -420,9 +420,9 @@ int main(int argc, char **argv)
     printf("collage> \n");
     
     /* now run Powell optimization */
-    pow_args = (POWARG *) xmalloc(sizeof(POWARG));
+    pow_args = (POWARG *) alloc_vect(sizeof(POWARG), 1);
     pow_args->iter = 0;
-    pow_args = (POWARG *) xmalloc(sizeof(POWARG));
+    pow_args = (POWARG *) alloc_vect(sizeof(POWARG), 1);
     pow_args->pow_init = pow_init;
     powell_optimization_multi((void *) pow_args, argv);
     if (g_target_ani!=1.0 ) printf("collage> The coordinates in the z-direction are compressed by the anisotropy factor %.3f\n", g_target_ani);
@@ -463,7 +463,7 @@ int main(int argc, char **argv)
       fprintf(g_outfile, "REMARK    \n");
       fclose(g_outfile);
       /* PDB file data */
-      g_pdb_save = (PDB *) xmalloc(g_parts_num_atoms[i]*sizeof(PDB));
+      g_pdb_save = (PDB *) alloc_vect(g_parts_num_atoms[i], sizeof(PDB));
       for (p=0;p<g_parts_num_atoms[i];++p) *(g_pdb_save+p)=*(g_pdb_original+p+lindex);
       uindex = lindex + g_parts_num_atoms[i];
       multi_rot_euler_trans(lindex, uindex, lindex, g_pdb_original, g_pdb_save, g_best_fit[i].euler[0],g_best_fit[i].euler[1],g_best_fit[i].euler[2], g_best_fit[i].pos[0]+g_com_x[i], g_best_fit[i].pos[1]+g_com_y[i], g_target_ani*g_best_fit[i].pos[2]+g_com_z[i]);
@@ -963,14 +963,14 @@ static void powell_optimization_multi (void *args, char **argv) {
   do_vect(&pow_vect6n,6*g_num_parts);
   
   /* prepare scratch space */
-  pow_scratch = (POWSCR *) xmalloc(sizeof(POWSCR));
-  pow_scratch->pdb = (PDB *) xmalloc(g_num_atoms*sizeof(PDB));
+  pow_scratch = (POWSCR *) alloc_vect(sizeof(POWSCR), 1);
+  pow_scratch->pdb = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
   for (q=0;q<g_num_atoms;++q) *(pow_scratch->pdb+q)=*(g_pdb_original+q);
   do_vect(&pow_scratch->phi_du,g_nvox);
   do_vect(&pow_scratch->phi_hi,g_nvox);  
 
   /* prepare result struct */
-  pow_results = (POWRES *) xmalloc(sizeof(POWRES));
+  pow_results = (POWRES *) alloc_vect(sizeof(POWRES), 1);
   pow_results->head = NULL;
   pow_results->last = NULL;
 
@@ -1111,7 +1111,7 @@ static void create_inside_molecule_poslist (double *phi) {
   int ix2,iy2,iz2,erosion_shell_width;
   char *mask_inside, *mask_inside2;
  
-  mask_inside = (char *) xmalloc(g_nvox*sizeof(char));
+  mask_inside = (char *) alloc_vect(g_nvox, sizeof(char));
   for (q=0;q<g_nvox;q++) mask_inside[q]=0;
   
   g_inside_num=0;
@@ -1157,7 +1157,7 @@ static void create_inside_molecule_poslist (double *phi) {
   
   /* erode surface of inside subset, we want central part only */
 
-  mask_inside2 = (char *) xmalloc(g_nvox*sizeof(char));
+  mask_inside2 = (char *) alloc_vect(g_nvox, sizeof(char));
   for(q=0;q<g_nvox;q++) mask_inside2[q]=mask_inside[q];
   
   unsigned count =0;
@@ -1186,7 +1186,7 @@ static void create_inside_molecule_poslist (double *phi) {
   printf("collage> Found %d inside or buried voxels (out of a total of %lu).\n",g_inside_num,g_nvox); 
 
   /* allocate inside poslist */
-  g_inside_list = (POS *) xmalloc(g_inside_num * sizeof(POS));
+  g_inside_list = (POS *) alloc_vect(g_inside_num, sizeof(POS));
 
   /* now fill inside poslist */
   curr=0;

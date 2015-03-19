@@ -24,7 +24,7 @@ workq_t* workq_init (int threads)
   workq_t *wq;
   int status;
     
-  wq = (workq_t *) xmalloc(sizeof(workq_t));
+  wq = (workq_t *) alloc_vect(sizeof(workq_t), 1);
 
   status = pthread_attr_init (&wq->attr);
   if (status != 0) {
@@ -209,7 +209,7 @@ void workq_add (workq_t *wq, void (*engine) (void *arg), void *element)
   /*
    * Create and initialize a request structure.
    */
-  item = (workq_ele_t *) xmalloc (sizeof (workq_ele_t));
+  item = (workq_ele_t *) alloc_vect (sizeof (workq_ele_t), 1);
   item->engine = engine;
   item->data   = element;
   item->next   = NULL;
@@ -393,18 +393,3 @@ inline void print(char *fmt, ...)
 
   return;
 }
-
-
-/* xmalloc: malloc and report if error */
-
-inline void *xmalloc(size_t n)
-{
-  void *p;
-
-  p = malloc(n);
-  if (p == NULL)
-    error("malloc of %u bytes failed:", n);
-  return p;
-}
-
-
