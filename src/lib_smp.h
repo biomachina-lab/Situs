@@ -40,9 +40,9 @@ extern "C" {
 typedef struct Powell_Args {
   unsigned long   iter;
   double          *pow_init;
-  #ifdef _SMP_
+#ifdef _SMP_
   pthread_mutex_t print_mutex;
-  #endif
+#endif
 } POWARG;
 
 #ifdef _SMP_
@@ -51,26 +51,26 @@ typedef struct Powell_Args {
  * Structure to keep track of work queue requests.
  */
 typedef struct workq_ele_tag {
-    struct workq_ele_tag   *next;
-    void   (*engine) (void *arg);   /* user engine */
-    void   *data;
+  struct workq_ele_tag   *next;
+  void (*engine)(void *arg);      /* user engine */
+  void   *data;
 } workq_ele_t;
 
 /*
  * Structure describing a work queue.
  */
 typedef struct workq_tag {
-    pthread_mutex_t     mutex;
-    pthread_cond_t      cv;             /* wait for work */
-    pthread_mutex_t     barriermutex;
-    pthread_cond_t      barrier;        /* barrier */
-    pthread_attr_t      attr;           /* create detached threads */
-    workq_ele_t         *first, *last;  /* work queue */
-    int                 valid;          /* set when valid */
-    int                 quit;           /* set when workq should quit */
-    int                 parallelism;    /* number of threads required */
-    int                 counter;        /* current number of threads */
-    int                 idle;           /* number of idle threads */
+  pthread_mutex_t     mutex;
+  pthread_cond_t      cv;             /* wait for work */
+  pthread_mutex_t     barriermutex;
+  pthread_cond_t      barrier;        /* barrier */
+  pthread_attr_t      attr;           /* create detached threads */
+  workq_ele_t         *first, *last;  /* work queue */
+  int                 valid;          /* set when valid */
+  int                 quit;           /* set when workq should quit */
+  int                 parallelism;    /* number of threads required */
+  int                 counter;        /* current number of threads */
+  int                 idle;           /* number of idle threads */
 } workq_t;
 
 #define WORKQ_VALID     0xdec1992
@@ -78,11 +78,11 @@ typedef struct workq_tag {
 /*
  * Define work queue functions
  */
-extern workq_t* workq_init (int threads);
-extern void *workq_server (void *args);
-extern void workq_barrier (workq_t *wq);
-extern void workq_destroy (workq_t *wq);
-extern void workq_add (workq_t *wq, void (*engine) (void *arg), void *data);
+extern workq_t *workq_init(int threads);
+extern void *workq_server(void *args);
+extern void workq_barrier(workq_t *wq);
+extern void workq_destroy(workq_t *wq);
+extern void workq_add(workq_t *wq, void (*engine)(void *arg), void *data);
 
 #endif
 
@@ -95,4 +95,4 @@ inline void error(char *fmt, ...);
 }
 #endif
 
-#endif 
+#endif

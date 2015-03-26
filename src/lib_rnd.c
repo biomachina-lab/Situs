@@ -4,7 +4,7 @@
 * Library is part of the Situs package URL: situs.biomachina.org     *
 **********************************************************************
 *                                                                    *
-* Random number generator.                                           * 
+* Random number generator.                                           *
 *                                                                    *
 **********************************************************************
 * (c) 1997, 1999 Makoto Matsumoto and Takuji Nishimura               *
@@ -37,14 +37,14 @@
 #include <stdio.h>
 #include "lib_rnd.h"
 
-/* Period parameters */  
+/* Period parameters */
 #define N 624
 #define M 397
 #define MATRIX_A 0x9908b0df   /* constant vector a */
 #define UPPER_MASK 0x80000000 /* most significant w-r bits */
 #define LOWER_MASK 0x7fffffff /* least significant r bits */
 
-/* Tempering parameters */   
+/* Tempering parameters */
 #define TEMPERING_MASK_B 0x9d2c5680
 #define TEMPERING_MASK_C 0xefc60000
 #define TEMPERING_SHIFT_U(y)  (y >> 11)
@@ -54,7 +54,7 @@
 
 /* global variables */
 static unsigned long g_mt[N]; /* the array for the state vector  */
-static int g_mti=N+1; /* g_mti==N+1 means g_mt[N] is not initialized */
+static int g_mti = N + 1; /* g_mti==N+1 means g_mt[N] is not initialized */
 
 /*===================================================================*/
 /* Initialization of array with a seed. Theoretically,               */
@@ -62,53 +62,55 @@ static int g_mti=N+1; /* g_mti==N+1 means g_mt[N] is not initialized */
 /* This function allows to choose any of 2^19937-1 ones.             */
 /* Essential bits in "seed_array[]" is following 19937 bits:         */
 /* (seed_array[0]&UPPER_MASK), seed_array[1], ..., seed_array[N-1].  */
-/* (seed_array[0]&LOWER_MASK) is discarded.                          */ 
+/* (seed_array[0]&LOWER_MASK) is discarded.                          */
 /* Theoretically,                                                    */
 /* (seed_array[0]&UPPER_MASK), seed_array[1], ..., seed_array[N-1]   */
 /* can take any values except all zeros.                             */
-void sgenrand (unsigned long seed) {
-	int i;
+void sgenrand(unsigned long seed)
+{
+  int i;
 
-	for (i=0;i<N;i++) {
-		g_mt[i] = seed & 0xffff0000;
-		seed = 69069 * seed + 1;
-		g_mt[i] |= (seed & 0xffff0000) >> 16;
-		seed = 69069 * seed + 1;
-	}
-	g_mti = N;
+  for (i = 0; i < N; i++) {
+    g_mt[i] = seed & 0xffff0000;
+    seed = 69069 * seed + 1;
+    g_mt[i] |= (seed & 0xffff0000) >> 16;
+    seed = 69069 * seed + 1;
+  }
+  g_mti = N;
 }
 
 /*===================================================================*/
 /* real random number generator */
-double genrand () {
-	unsigned long y;
-	static unsigned long mag01[2]={0x0, MATRIX_A};
-	  
-	if (g_mti >= N) { /* generate N words at one time */
-		int kk;
-		if (g_mti == N+1) /* if sgenrand() has not been called, */
-		sgenrand(4357); /* a default initial seed is used   */
-		
-		for (kk=0;kk<N-M;kk++) {
-			y = (g_mt[kk]&UPPER_MASK)|(g_mt[kk+1]&LOWER_MASK);
-			g_mt[kk] = g_mt[kk+M] ^ (y >> 1) ^ mag01[y & 0x1];
-		}
-		for (;kk<N-1;kk++) {
-			y = (g_mt[kk]&UPPER_MASK)|(g_mt[kk+1]&LOWER_MASK);
-			g_mt[kk] = g_mt[kk+(M-N)] ^ (y >> 1) ^ mag01[y & 0x1];
-		}
-		y = (g_mt[N-1]&UPPER_MASK)|(g_mt[0]&LOWER_MASK);
-		g_mt[N-1] = g_mt[M-1] ^ (y >> 1) ^ mag01[y & 0x1];
-		g_mti = 0;
-	}
+double genrand()
+{
+  unsigned long y;
+  static unsigned long mag01[2] = {0x0, MATRIX_A};
 
-	y = g_mt[g_mti++];
-	y ^= TEMPERING_SHIFT_U(y);
-	y ^= TEMPERING_SHIFT_S(y) & TEMPERING_MASK_B;
-	y ^= TEMPERING_SHIFT_T(y) & TEMPERING_MASK_C;
-	y ^= TEMPERING_SHIFT_L(y);
-	  
-	return ( (double)y * 2.3283064370807974e-10 );
+  if (g_mti >= N) { /* generate N words at one time */
+    int kk;
+    if (g_mti == N + 1) /* if sgenrand() has not been called, */
+      sgenrand(4357); /* a default initial seed is used   */
+
+    for (kk = 0; kk < N - M; kk++) {
+      y = (g_mt[kk] & UPPER_MASK) | (g_mt[kk + 1] & LOWER_MASK);
+      g_mt[kk] = g_mt[kk + M] ^ (y >> 1) ^ mag01[y & 0x1];
+    }
+    for (; kk < N - 1; kk++) {
+      y = (g_mt[kk] & UPPER_MASK) | (g_mt[kk + 1] & LOWER_MASK);
+      g_mt[kk] = g_mt[kk + (M - N)] ^ (y >> 1) ^ mag01[y & 0x1];
+    }
+    y = (g_mt[N - 1] & UPPER_MASK) | (g_mt[0] & LOWER_MASK);
+    g_mt[N - 1] = g_mt[M - 1] ^ (y >> 1) ^ mag01[y & 0x1];
+    g_mti = 0;
+  }
+
+  y = g_mt[g_mti++];
+  y ^= TEMPERING_SHIFT_U(y);
+  y ^= TEMPERING_SHIFT_S(y) & TEMPERING_MASK_B;
+  y ^= TEMPERING_SHIFT_T(y) & TEMPERING_MASK_C;
+  y ^= TEMPERING_SHIFT_L(y);
+
+  return ((double)y * 2.3283064370807974e-10);
 }
 
 /*                         The "Artistic License"
@@ -230,6 +232,6 @@ Definitions:
     MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
                                 The End
-			       
+
 */
 

@@ -6,8 +6,8 @@ extern "C" {
 #endif
 
 /* header file for lib_rnd.c */
-void sgenrand (unsigned long); 
-double genrand ();
+void sgenrand(unsigned long);
+double genrand();
 
 #ifdef __cplusplus
 }

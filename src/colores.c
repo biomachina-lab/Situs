@@ -375,7 +375,7 @@ int main(int argc, char **argv)
 
   /* create the dummy structure g_pdb_move */
   g_pdb_move = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
-  for (i = 0; i < g_num_atoms; ++i) 
+  for (i = 0; i < g_num_atoms; ++i)
     *(g_pdb_move + i) = *(g_pdb_original + i);
 
   /* rotate g_pdb_move (if desired), project to grid, and convolve with Gaussian */
@@ -1336,7 +1336,7 @@ static void *search6d_fft_par(void *thread_arg)
   do_vect(&p_phi_hi, g_fftw_nvox_r2c);
 
   p_pdb_move = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
-  for (q = 0; q < g_num_atoms; ++q) 
+  for (q = 0; q < g_num_atoms; ++q)
     *(p_pdb_move + q) = *(g_pdb_original + q);
 
   p_fftw_grid_b = (fftw_complex *) alloc_vect(g_fftw_nvox_c2r, sizeof(fftw_complex));
@@ -2106,12 +2106,12 @@ static void peak_extract(SAV **ccr, FIT **found_peak_final)
       {0.02777777777778, 0.05555555555556, 0.02777777777778},
       {0.02777777777778, 0.02777777777778, 0.02777777777778}
     },
-    { 
+    {
       {0.02777777777778, 0.05555555555556, 0.02777777777778},
       {0.05555555555556, 0.11111111111111, 0.05555555555556},
       {0.02777777777778, 0.05555555555556, 0.02777777777778}
     },
-    { 
+    {
       {0.02777777777778, 0.02777777777778, 0.02777777777778},
       {0.02777777777778, 0.05555555555556, 0.02777777777778},
       {0.02777777777778, 0.02777777777778, 0.02777777777778}
@@ -2525,7 +2525,7 @@ static void create_inside_molecule_poslist(double *phi)
   /* erode surface of inside subset, we want central part only */
 
   mask_inside2 = (char *) alloc_vect(g_nvox, sizeof(char));
-  for (q = 0; q < g_nvox; q++) 
+  for (q = 0; q < g_nvox; q++)
     mask_inside2[q] = mask_inside[q];
 
   erosion_shell_width = 1;
@@ -2653,7 +2653,7 @@ static void create_inside_molecule_poslist_flipped(double *phi)
   /* erode surface of inside subset, we want central part only */
 
   mask_inside2 = (char *) alloc_vect(g_nvox, sizeof(char));
-  for (q = 0; q < g_nvox; q++) 
+  for (q = 0; q < g_nvox; q++)
     mask_inside2[q] = mask_inside[q];
 
   erosion_shell_width = 1;

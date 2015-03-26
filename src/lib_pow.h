@@ -6,13 +6,13 @@
 /* header file for lib_pow.c */
 
 #define SWAPPING(_a,_b,_type) \
-{\
-  _type _tmp;\
-  \
-  _tmp = (_a);\
-  (_a) = (_b);\
-  (_b) = _tmp;\
-}
+  {\
+    _type _tmp;\
+    \
+    _tmp = (_a);\
+    (_a) = (_b);\
+    (_b) = _tmp;\
+  }
 
 #ifdef __cplusplus
 #extern "C" {
