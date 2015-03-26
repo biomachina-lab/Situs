@@ -18,6 +18,7 @@
 #include <time.h>
 #include <dirent.h>
 #include <unistd.h>
+#include "lib_vec.h"
 
 #ifndef SITUS_H
 #define SITUS_H
@@ -29,26 +30,26 @@
 #define ROT_CONV (PI/180.0)
 
 /* widely used in all PDB handling C programs */
-typedef struct {
-  char  recd[7];        /*       1 -  6 */
-  int   serial;         /*       7 - 11 */
-  char  type[3];        /*      13 - 14 */
-  char  loc[3];         /*      15 - 16 */
-  char  alt[2];         /*           17 */
-  char  res[5];         /*      18 - 21 */
-  char  chain[2];       /*           22 */
-  int   seq;            /*      23 - 26 */
-  char  icode[2];       /*           27 */
-  float x;              /*      31 - 38 */
-  float y;              /*      39 - 46 */
-  float z;              /*      47 - 54 */
-  float occupancy;      /*      55 - 60 */
-  float beta;           /*      61 - 66 */
-  int   footnote;       /*      68 - 70 */
-  char  segid[5];       /*      73 - 76 */
-  char  element[3];     /*      77 - 78 */
-  char  charge[3];      /*      79 - 80 */
-  float weight;         /* mass of atom */
+typedef struct {        /* 76-byte struct */
+  char  recd[7];        /* bytes 0 -  6; 7 = pad*/
+  int   serial;         /*       8 - 11 */
+  char  type[3];        /*      12 - 14 */
+  char  loc[3];         /*      15 - 17 */
+  char  alt[2];         /*      18 - 19 */
+  char  res[5];         /*      20 - 24 */
+  char  chain[2];       /*      25 - 26; 27 = pad */
+  int   seq;            /*      28 - 31 */
+  char  icode[2];       /*      32 - 33; 34-35 = pad */
+  float x;              /*      36 - 39 */
+  float y;              /*      40 - 43 */
+  float z;              /*      44 - 47 */
+  float occupancy;      /*      48 - 51 */
+  float beta;           /*      52 - 55 */
+  int   footnote;       /*      56 - 59 */
+  char  segid[5];       /*      60 - 64 */
+  char  element[3];     /*      65 - 67 */
+  char  charge[3];      /*      68 - 70; 71 = pad */
+  float weight;         /* mass 72 - 75 */
 } PDB;
 
 #endif

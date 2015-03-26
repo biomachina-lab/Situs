@@ -86,10 +86,7 @@ void read_situs(char *vol_file, double *width, double *origx, double *origy, dou
 	
 	/* allocate memory and read data */
 	printf ("lib_vio> Reading density data... \n");
-	*phi = (double *) malloc(nvox * sizeof(double));
-	if (*phi == NULL) {
-		error_memory_allocation(13020, program);
-	}
+	*phi = (double *) alloc_vect(nvox, sizeof(double));
 	
 	for (count=0;count<nvox;count++) {
 		if (fscanf(fin,"%le", &dtemp) != 1) {
@@ -183,10 +180,7 @@ void read_xplor (char *vol_file, int *orom, int *cubic,
   float xlen, ylen, zlen;
   int indx, indy, indz;
   
-  nextline = (char *) malloc(FLENGTH * sizeof(char));
-  if (nextline == NULL) {
-    error_memory_allocation(70410, "lib_vio");
-  }
+  nextline = (char *) alloc_vect(FLENGTH, sizeof(char));
   
   fin = fopen(vol_file, "r");
   if( fin == NULL ) {
@@ -280,7 +274,7 @@ void read_xplor (char *vol_file, int *orom, int *cubic,
   }
   
   fclose(fin);
-  free (nextline);
+  free_vect_and_zero_ptr(&nextline);
   printf ("lib_vio> Volumetric data read from file %s\n", vol_file); 
 }
 
@@ -714,12 +708,10 @@ void dump_binary_and_exit (char *in_file, char *out_file, int swap) {
   
   nfloat = count_floats(&fin);
   
-  phi = (float *) malloc(nfloat * 4); 
-  if (phi == NULL) {
-    error_memory_allocation(70920, "lib_vio");
-  }
+  phi = (float *) alloc_vect(nfloat, sizeof(float)); 
   
-  for(count=0;count<nfloat;count++) read_float(phi+count,fin,swap);
+  for(count=0;count<nfloat;count++) 
+    read_float(phi+count,fin,swap);
   
   printf("lib_vio> Binary data read as 32-bit 'float' type from file %s\n", in_file);
   if (swap) printf("lib_vio> The byte order (endianism) has been swapped.\n");
@@ -1095,7 +1087,7 @@ void permute_map (int ordermode, unsigned nc, unsigned nr, unsigned ns, unsigned
   nvox = nc * nr * ns;
   do_vect(pphi,nvox);
   for(count=0;count<nvox;count++) *(*pphi+permuted_index(ordermode,count,nc,nr,ns)) = *(phi+count);
-  free(phi);
+  free_vect_and_zero_ptr(&phi);
   
   /* permute the map dimensions */
   permute_dimensions(ordermode,nc,nr,ns,nx,ny,nz,ncstart,nrstart,nsstart,nxstart,nystart,nzstart);

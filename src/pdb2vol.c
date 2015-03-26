@@ -166,10 +166,7 @@ int main(int argc, char *argv[]) {
 
   /* now copy the useful atoms to pdb2 */
 
-  pdb2 = (PDB *) malloc((num1)*sizeof(PDB));
-  if (pdb2== NULL) {
-    error_memory_allocation(60005, "pdb2vol");
-  }
+  pdb2 = (PDB *) alloc_vect(num1, sizeof(PDB));
   num2 = 0;
   for (i=0;i<num1;++i) {
     if (num2>=num1) {
@@ -186,7 +183,7 @@ int main(int argc, char *argv[]) {
   }	
   printf ("pdb2vol> %d out of %d atoms selected for conversion.\n", num2, num1);
   printf ("pdb2vol> \n");
-  free(pdb1);
+  free_vect_and_zero_ptr(&pdb1);
 	
   /* from now on we work with pdb2 */
 
@@ -228,10 +225,7 @@ int main(int argc, char *argv[]) {
   origy2 = miny - margin * width;
   origz2 = minz - margin * width;
   nvox2 = g_extx2*g_exty2*extz2;
-  phi2 = (double *) malloc(nvox2 * sizeof(double));
-  if (phi2 == NULL) {
-    error_memory_allocation(60110, "pdb2vol");
-  }
+  phi2 = (double *) alloc_vect(nvox2, sizeof(double));
 		
   if (nondens_mode) { /* standard situation for biological atoms */ 
     printf ("pdb2vol> Kernel width. Please enter (in Angstrom):\n");
@@ -369,10 +363,8 @@ int main(int argc, char *argv[]) {
     sigmap = sqrt(varmap/3.0); /* sigma-1D */
     exth = (int) ceil(3*sigmap); /* truncate at 3 sigma-1D == sqrt(3) sigma-3D */
     g_extx = 2 * exth + 1; g_exty = g_extx; extz = g_extx; nvox = g_extx * g_exty * extz;
-    phi = (double *) malloc(nvox * sizeof(double));
-    if (phi == NULL) {
-      error_memory_allocation(60140, "pdb2vol");
-    }
+    phi = (double *) alloc_vect(nvox, sizeof(double));
+
     /* write Gaussian within 3 sigma-1D to map */
     bvalue = -1.0 / (2.0*sigmap*sigmap);
     cvalue = 9.0*sigmap*sigmap;
@@ -400,10 +392,8 @@ int main(int argc, char *argv[]) {
     }
     exth = (int) ceil(rc2/width);
     g_extx = 2 * exth + 1; g_exty = g_extx; extz = g_extx; nvox = g_extx * g_exty * extz;
-    phi = (double *) malloc(nvox * sizeof(double));
-    if (phi == NULL) {
-      error_memory_allocation(60220, "pdb2vol");
-    }
+    phi = (double *) alloc_vect(nvox, sizeof(double));
+
     /* write kernel to map */
     bvalue = 0.5 * exp(-1.0*log(rh2)) * exp(1.0*log(width));
     for(count=0;count<nvox;count++) *(phi+count) = 0.0;
@@ -432,10 +422,8 @@ int main(int argc, char *argv[]) {
     }
     exth = (int) ceil(rc3/width);
     g_extx = 2 * exth + 1; g_exty = g_extx; extz = g_extx; nvox = g_extx * g_exty * extz;
-    phi = (double *) malloc(nvox * sizeof(double));
-    if (phi == NULL) {
-      error_memory_allocation(60240, "pdb2vol");
-    }
+    phi = (double *) alloc_vect(nvox, sizeof(double));
+
     /* write kernel to map */ 
     bvalue = 0.5 * exp(-1.5*log(rh3)) * exp(1.5*log(width));
     for(count=0;count<nvox;count++) *(phi+count) = 0.0;
@@ -464,10 +452,8 @@ int main(int argc, char *argv[]) {
     }
     exth = (int) ceil(rc4/width);
     g_extx = 2 * exth + 1; g_exty = g_extx; extz = g_extx; nvox = g_extx * g_exty * extz;
-    phi = (double *) malloc(nvox * sizeof(double));
-    if (phi == NULL) {
-      error_memory_allocation(60240, "pdb2vol");
-    }
+    phi = (double *) alloc_vect(nvox, sizeof(double));
+
     /* write kernel to map */ 
     bvalue = 0.5 * exp(-2.0*log(rh4)) * exp(2.0*log(width));
     for(count=0;count<nvox;count++) *(phi+count) = 0.0;
@@ -495,10 +481,8 @@ int main(int argc, char *argv[]) {
     }
     exth = (int) ceil(rc5/width);
     g_extx = 2 * exth + 1; g_exty = g_extx; extz = g_extx; nvox = g_extx * g_exty * extz;
-    phi = (double *) malloc(nvox * sizeof(double));
-    if (phi == NULL) {
-      error_memory_allocation(60250, "pdb2vol");
-    }
+    phi = (double *) alloc_vect(nvox, sizeof(double));
+
     /* write kernel to map */ 
     bvalue = 0.5 * exp(-60.0*log(rh5)) * exp(60.0*log(width));
     for(count=0;count<nvox;count++) *(phi+count) = 0.0;
@@ -528,11 +512,7 @@ int main(int argc, char *argv[]) {
     origy3 = miny - (exth+margin) * width;
     origz3 = minz - (exth+margin) * width;
     nvox3 = g_extx3*g_exty3*extz3;
-    phi3 = (double *) malloc(nvox3 * sizeof(double));
-    if (phi3 == NULL) {
-      error_memory_allocation(60310, "pdb2vol");
-    }
-    for (count=0;count<nvox3;count++) *(phi3+count) = 0.0;
+    phi3 = (double *) alloc_vect(nvox3, sizeof(double));
     extxy2 = g_extx2 * g_exty2;
     for (count=0;count<nvox2;count++) {
       dval = *(phi2+count);

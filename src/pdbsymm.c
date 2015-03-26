@@ -73,10 +73,7 @@ int main(int argc, char *argv[]) {
       printf ("pdbsymm> Enter y-coord of helical axis in Angstrom: "); 
       yoff = readln_double();
     }
-    pdbH = (PDB *) malloc(numAtoms * sizeof(PDB) * ((iend)-(ibeg)+1));
-    if (pdbH == NULL) {
-      error_memory_allocation(34020, "pdbsymm");
-    }
+    pdbH = (PDB *) alloc_vect(numAtoms * (iend - ibeg + 1), sizeof(PDB));
     
     k=0;
     for(unit=ibeg; unit<=iend; unit++) {
@@ -151,10 +148,7 @@ int main(int argc, char *argv[]) {
       yoff = readln_double();
     }
     
-    pdbH = (PDB *) malloc(numAtoms * sizeof(PDB) * order);
-    if (pdbH == NULL) {
-      error_memory_allocation(34020, "pdbsymm");
-    }
+    pdbH = (PDB *) alloc_vect(numAtoms * order, sizeof(PDB));
     k=0;
     for(unit=0; unit<order; unit++) {
       for(i=0; i<numAtoms; i++) {
@@ -237,10 +231,7 @@ int main(int argc, char *argv[]) {
       zoff = readln_double();
     }
     
-    pdbH = (PDB *) malloc(numAtoms * sizeof(PDB) * order * 2);
-    if (pdbH == NULL) {
-      error_memory_allocation(34020, "pdbsymm");
-    }
+    pdbH = (PDB *) alloc_vect(numAtoms * order * 2, sizeof(PDB));
     k=0;
     for(unit=0; unit<(2*order); unit++) {
       for(i=0; i<numAtoms; i++) {

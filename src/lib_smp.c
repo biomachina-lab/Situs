@@ -144,7 +144,7 @@ void *workq_server (void *arg)
       if (status != 0)
 	return NULL;
       we->engine (we->data);
-      free (we);
+      free_vect_and_zero_ptr(&we);
       status = pthread_mutex_lock (&wq->mutex);
       if (status != 0)
 	return NULL;
@@ -215,7 +215,7 @@ void workq_add (workq_t *wq, void (*engine) (void *arg), void *element)
   item->next   = NULL;
   status = pthread_mutex_lock (&wq->mutex);
   if (status != 0) {
-    free (item);
+    free_vect_and_zero_ptr(&item);
     error("WorkQ Add: Mutex lock failed\n");
   }
 
@@ -351,7 +351,7 @@ void workq_destroy (workq_t *wq)
   if (status != 0)
     error("WorkQ Destroy: Attribute destroy failed\n");
 
-  free(wq);
+  free_vect_and_zero_ptr(&wq);
 
   return;
 }

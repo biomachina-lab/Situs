@@ -96,10 +96,7 @@ void read_eulers (char *in_file, unsigned long *eu_count, float **eu_store) {
 	fclose(in);
 	
 	/* allocate eu_store */
-	*eu_store = (float *) malloc(i * 3 * sizeof(float));
-	if (*eu_store == NULL) {
-		error_memory_allocation(15040, program);
-	}
+	*eu_store = (float *) alloc_vect(i * 3, sizeof(float));
 	if ((in = fopen(in_file, "r")) == NULL) {
 		error_open_filename(15050, program, in_file);
 	}
@@ -268,10 +265,7 @@ void eu_spiral (double eu_range[3][2], double delta, unsigned long *eu_count, fl
 	
         /* allocate memory */
 
-	*eu_store = (float *) malloc(i * 3 * sizeof(float));
-	if (*eu_store == NULL) {
-		error_memory_allocation(15110, program);
-	}
+	*eu_store = (float *) alloc_vect(i * 3, sizeof(float));
 	
 	j=0;
 	/* lower pole on (theta,psi) sphere, k=0 */
@@ -360,30 +354,11 @@ void eu_sparsed (double eu_range[3][2], double delta, unsigned long *eu_count, f
         partial_count=(psi_steps+1)*(theta_steps+1);
 
         /* allocate memory */
-        curr_eulers = (float *) malloc(partial_count * 3 * sizeof(float));
-        if (curr_eulers == NULL) {
-           error_memory_allocation(15120, program);
-        }
-
-        degenerate = (char *) malloc(partial_count * sizeof(char));
-        if (degenerate == NULL) {
-           error_memory_allocation(15130, program);
-        }
-
-	pdb1 = (PDB *) malloc(1 * sizeof(PDB));
-	if (pdb1== NULL) {
-	   error_memory_allocation(33220, program);
-	}
-
-	pdb2 = (PDB *) malloc(1 * sizeof(PDB));
-	if (pdb2== NULL) {
-	   error_memory_allocation(33220, program);
-	}
-
-	pdb3 = (PDB *) malloc(1 * sizeof(PDB));
-	if (pdb3== NULL) {
-   	  error_memory_allocation(33220, program);
-	}
+        curr_eulers = (float *) alloc_vect(partial_count * 3, sizeof(float));
+        degenerate = (char *) alloc_vect(partial_count, sizeof(char));
+	pdb1 = (PDB *) alloc_vect(1, sizeof(PDB));
+	pdb2 = (PDB *) alloc_vect(1, sizeof(PDB));
+	pdb3 = (PDB *) alloc_vect(1, sizeof(PDB));
 
 	pdb1[0].x=0.0;
 	pdb1[0].y=0.0;
@@ -432,11 +407,7 @@ void eu_sparsed (double eu_range[3][2], double delta, unsigned long *eu_count, f
 	curr_count=(partial_count-k)*(phi_steps+1);
 
 	/* allocate memors */
-	*eu_store = (float *) malloc(curr_count * phi_steps * 3 * sizeof(float));
-	if (*eu_store == NULL) {
-		error_memory_allocation(15211, program);
-	}
-	
+	*eu_store = (float *) alloc_vect(curr_count * phi_steps * 3, sizeof(float));	
         h=0;
 	printf("lib_eul> Adding psi angle to reduced set...\n");
         for (j=0;j<partial_count;j++)  {
@@ -454,11 +425,11 @@ void eu_sparsed (double eu_range[3][2], double delta, unsigned long *eu_count, f
       	
         printf("lib_eul> Euler angles, final number %lu (delta = %f deg.)\n",*eu_count,delta);
         
-        free(pdb1); 
-        free(pdb2); 
-        free(pdb3); 
-        free(curr_eulers);
-	free(degenerate);
+        free_vect_and_zero_ptr(&pdb1); 
+        free_vect_and_zero_ptr(&pdb2); 
+        free_vect_and_zero_ptr(&pdb3); 
+        free_vect_and_zero_ptr(&curr_eulers);
+	free_vect_and_zero_ptr(&degenerate);
 }
 
 /* returns cosine of deviation angle between two rotations */
@@ -558,10 +529,7 @@ void eu_proportional (double eu_range[3][2], double delta, unsigned long *eu_cou
         *eu_count = u;
 
         /* allocate memory */
-        *eu_store = (float *) malloc(*eu_count * 3 * sizeof(float));
-        if (*eu_store == NULL) {
-           error_memory_allocation(15120, program);
-        }
+        *eu_store = (float *) alloc_vect(*eu_count * 3, sizeof(float));
 
         j = 0;
 	for (phi=eu_range[2][0]; phi < 360.0 && 

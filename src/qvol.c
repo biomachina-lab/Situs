@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
   read_vol(argv[1], &width, &origx, &origy, &origz, &extx, &exty, &extz, &phi);
   nvox = extx * exty * extz;
   extxy = extx * exty;
-  pid = (int *) malloc(nvox * sizeof(int));
+  pid = (int *) alloc_vect(nvox, sizeof(int));
   if (pid == NULL) {
     fprintf(stderr, "...qvol> Error: Unable to satisfy memory allocation request [e.c. 30210]\n");
     exit(30210);

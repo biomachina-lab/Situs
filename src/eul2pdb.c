@@ -51,15 +51,8 @@ int main (int argc, char **argv)
     error_open_filename(99999, program, argv[2]);
   }  
   
-  fake_pdb = (PDB *) malloc(1*sizeof(PDB));
-  if (fake_pdb== NULL) {
-    error_memory_allocation(99999, program);
-  }
-  
-  fake_pdb2 = (PDB *) malloc(1*sizeof(PDB));
-  if (fake_pdb2== NULL) {
-    error_memory_allocation(99999, program);
-  }
+  fake_pdb = (PDB *) alloc_vect(1, sizeof(PDB));
+  fake_pdb2 = (PDB *) alloc_vect(1, sizeof(PDB));
   
   u = 0;
   
@@ -82,8 +75,8 @@ int main (int argc, char **argv)
   
   printf("eul2pdb> %d triplets of Euler angles processed and written to the file: %s\n",u,argv[2]); 
   
-  free(fake_pdb);
-  free(fake_pdb2);
+  free_vect_and_zero_ptr(&fake_pdb);
+  free_vect_and_zero_ptr(&fake_pdb2);
   fclose(filein);
   fclose(fileout);
   return 0;

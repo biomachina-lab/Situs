@@ -704,11 +704,9 @@ void relax_laplacian (double **phi, unsigned extx, unsigned exty, unsigned extz,
 	
   /* allocate phi mask */
   nvox = extx * exty * extz;
-  mask = (char *) malloc(nvox * sizeof(char)); 
-  if (mask == NULL) {
-    error_memory_allocation(17130, program);
-  }
-  for (indv=0;indv<nvox;indv++) *(mask+indv)=1;
+  mask = (char *) alloc_vect(nvox, sizeof(char)); 
+  for (indv=0;indv<nvox;indv++) 
+    *(mask+indv)=1;
 	
   /* assign phi mask value based on distance to thresholded map */
   for (indz=margz;indz<extz-margz;indz++) 
@@ -749,8 +747,8 @@ void relax_laplacian (double **phi, unsigned extx, unsigned exty, unsigned extz,
 	  }
 	}
   } while (diff > 1E-8 * norm); 
-  free(nextphi);
-  free(mask);
+  free_vect_and_zero_ptr(&nextphi);
+  free_vect_and_zero_ptr(&mask);
 }
 
 /*====================================================================*/
@@ -789,7 +787,7 @@ void convolve_kernel_inside (double **outmap, double *inmap,
 		+= *(kernel+gidz_cube(indz2+margin,indy2+margin,indx2+margin,kernel_size)) * dval;
 	    } 
       } 
-  free(tmpmap);
+  free_vect_and_zero_ptr(&tmpmap);
 }
 
 /*====================================================================*/
@@ -875,7 +873,7 @@ void convolve_kernel_inside_erode (double **outmap, double *inmap,
 	      }
 	} 
       } 
-  free(tmpmap);
+  free_vect_and_zero_ptr(&tmpmap);
 }
 
 /*====================================================================*/
@@ -925,7 +923,7 @@ void convolve_kernel_outside (double **outmap, unsigned *out_extx, unsigned *out
 		+= *(kernel+gidz_cube(indz2+margin,indy2+margin,indx2+margin,kernel_size)) * dval;	
 	    } 
       } 
-  free(tmpmap);
+  free_vect_and_zero_ptr(&tmpmap);
   *out_origx = in_origx - widthx * margin;
   *out_origy = in_origy - widthy * margin;
   *out_origz = in_origz - widthz * margin;
@@ -962,12 +960,9 @@ int print_histogram(unsigned *extx, unsigned *exty, unsigned *extz, double **phi
       nbins = readln_int();
     }
 
-    his = (int *) malloc(nbins * sizeof(int));
-    phis = (int *) malloc(nbins * sizeof(int));
-    hisc = (double *) malloc(nbins * sizeof(double));
-    if (his == NULL || phis == NULL || hisc == NULL) {
-      error_memory_allocation(17170, "lib_vwk");
-    }
+    his = (int *) alloc_vect(nbins, sizeof(int));
+    phis = (int *) alloc_vect(nbins, sizeof(int));
+    hisc = (double *) alloc_vect(nbins, sizeof(double));
     
     printf ("lib_vwk> Printing voxel histogram, %d histogram bins\n", nbins);
     printf ("lib_vwk> (density value; voxel count; top-down cumulative volume fraction):\n");
@@ -1081,11 +1076,9 @@ void print_diff_histogram(unsigned *extx, unsigned *exty, unsigned *extz, double
 
   if (maxdensity>mindensity) {  
 
-    his = (int *) malloc(nbins * sizeof(int));
-    phis = (int *) malloc(nbins * sizeof(int));
-    if (his == NULL || phis == NULL ) {
-      error_memory_allocation(17171, "lib_vwk");
-    }
+    his = (int *) alloc_vect(nbins, sizeof(int));
+    phis = (int *) alloc_vect(nbins, sizeof(int));
+
     
     /* set up histogram, ignoring zero values */
     for (j=0;j<nbins;j++) his[j]=0; 

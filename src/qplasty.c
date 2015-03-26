@@ -15,6 +15,7 @@
 #include "situs.h"
 #include "lib_std.h"
 #include "lib_pio.h"
+#include "lib_vec.h"
 
 #define FLENGTH 1000            /* file name length */
 
@@ -300,25 +301,10 @@ void gaussjordan (double *mat, int n){
   double pivinv, currmax, dummy;
   double tmp;
   
-  coli = (int *) malloc(n * sizeof(int));
-  if (coli == NULL) {
-    fprintf(stderr, "qplasty> Error: Could not satisfy memory allocation request [e.c. 52910]\n"); 
-    exit(52910);
-  }
-
-  rowi = (int *) malloc(n * sizeof(int));
-  if (rowi == NULL) {
-    fprintf(stderr, "qplasty> Error: Could not satisfy memory allocation request [e.c. 52920]\n"); 
-    exit(52920);
-  }
+  coli = (int *) alloc_vect(n, sizeof(int));
+  rowi = (int *) alloc_vect(n, sizeof(int));
+  pivi = (int *) alloc_vect(n, sizeof(int));
   
-  pivi = (int *) malloc(n * sizeof(int));
-  if (pivi == NULL) {
-    fprintf(stderr, "qplasty> Error: Could not satisfy memory allocation request [e.c. 52930]\n"); 
-    exit(52930);
-  }
-  
-  for (j=0;j<n;j++) pivi[j]=0;
   for (i=0;i<n;i++) {
     currmax=0;
     for (j=0;j<n;j++)
@@ -363,9 +349,9 @@ void gaussjordan (double *mat, int n){
     mat[k*n+coli[l]] = tmp;
   }
 
-  free((void*)coli);
-  free((void*)rowi);
-  free((void*)pivi);
+  free_vect_and_zero_ptr(&coli);
+  free_vect_and_zero_ptr(&rowi);
+  free_vect_and_zero_ptr(&pivi);
 }
 
 /*
@@ -633,45 +619,16 @@ void interpolate_splines(int numA, PDB *pdbA,  int numB, PDB *pdbB, int numQ, PD
     
     // allocate matrix memory
     double *matrix;
-    matrix = (double *) malloc(matrix_size*matrix_size*sizeof(double));
-    if (matrix == NULL) 
-    {
-	fprintf(stderr, "qplasty> Error: Could not satisfy memory allocation request [e.c. 52700]\n"); 
-	exit(52700);
-    }
+    matrix = (double *) alloc_vect(matrix_size*matrix_size, sizeof(double));
   
     double *displacement_matrix;
-    displacement_matrix = (double *) malloc(displacement_matrix_rows*displacement_matrix_cols*sizeof(double));
-    if (displacement_matrix == NULL) 
-    {
-	fprintf(stderr, "qplasty> Error: Could not satisfy memory allocation request [e.c. 52710]\n"); 
-	exit(52710);
-    }
+    displacement_matrix = (double *) alloc_vect(displacement_matrix_rows*displacement_matrix_cols, sizeof(double));
 
     double *weight_matrix;
-    weight_matrix = (double *) malloc(weight_matrix_rows*weight_matrix_cols*sizeof(double));
-    if (weight_matrix == NULL) 
-    {
-	fprintf(stderr, "qplasty> Error: Could not satisfy memory allocation request [e.c. 52720]\n"); 
-	exit(52720);
-    }
-    
+    weight_matrix = (double *) alloc_vect(weight_matrix_rows*weight_matrix_cols, sizeof(double));
+     
     double *distance_matrix;
-    distance_matrix = (double *) malloc(numV*numV*sizeof(double));
-    if (distance_matrix == NULL) 
-    {
-	fprintf(stderr, "qplasty> Error: Could not satisfy memory allocation request [e.c. 52730]\n"); 
-	exit(52730);
-    }
-  
-    //all matrices are initialized with 0
-    for (i = 0; i < matrix_size; i++)
-    {
-	for (j = 0; j < matrix_size; j++)
-	    matrix[i*matrix_size+j] = 0.0;
-	displacement_matrix[i] = 0.0;
-	weight_matrix[i]       = 0.0;
-    } 
+    distance_matrix = (double *) alloc_vect(numV*numV, sizeof(double));
   
     compute_distance_matrix(numQ, pdbQ, distance_matrix);
     
@@ -721,7 +678,7 @@ void interpolate_splines(int numA, PDB *pdbA,  int numB, PDB *pdbB, int numQ, PD
 	    weight_matrix[i] += matrix[i*matrix_size+j]*displacement_matrix[j];
 
     double *kernel_tmp_matrix;
-    kernel_tmp_matrix = (double *) malloc(block_size*block_size*sizeof(double));
+    kernel_tmp_matrix = (double *) alloc_vect(block_size*block_size, sizeof(double));
     PDB atom;
     int index_ca;
     
@@ -786,11 +743,11 @@ void interpolate_splines(int numA, PDB *pdbA,  int numB, PDB *pdbB, int numQ, PD
     fprintf(stderr, "qplasty>      Interpolated %d atoms!\n", numA);
     fprintf(stderr, "qplasty> \n");
 
-    free((void*)matrix);
-    free((void*)displacement_matrix);
-    free((void*)weight_matrix);
-    free((void*)distance_matrix); 
-    free((void*)kernel_tmp_matrix);
+    free_vect_and_zero_ptr(&matrix);
+    free_vect_and_zero_ptr(&displacement_matrix);
+    free_vect_and_zero_ptr(&weight_matrix);
+    free_vect_and_zero_ptr(&distance_matrix); 
+    free_vect_and_zero_ptr(&kernel_tmp_matrix);
 }
 
 /**

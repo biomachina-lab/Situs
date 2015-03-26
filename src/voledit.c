@@ -228,7 +228,7 @@ int main (int argc, char *argv[]) {
 	project_map_lattice(&pphi2, maxx-minx+1, maxy-miny+1, maxz-minz+1, 
 			    origx+minx*width, origy+miny*width, origz+minz*width, width, width, width,
 			    pphi, extx, exty, extz, origx, origy, origz, width, width, width);
-	free(pphi);
+	free_vect_and_zero_ptr(&pphi);
 	pphi = pphi2;
 	update_parameters(slicemode, &ppro, &rangea, &rangeb, &rangec, &extx, &exty, &extz, &origx, &origy, &origz, 
 			  maxx, minx, maxy, miny, maxz, minz, width, &k, &cutoff, &stride, pphi, &nvox);
@@ -240,7 +240,7 @@ int main (int argc, char *argv[]) {
 	project_map_lattice(&pphi2, maxx-minx+1, maxy-miny+1, maxz-minz+1, 
 			    origx+minx*width, origy+miny*width, origz+minz*width, width, width, width,
 			    pphi, extx, exty, extz, origx, origy, origz, width, width, width);
-	free(pphi);
+	free_vect_and_zero_ptr(&pphi);
 	pphi = pphi2;
 	update_parameters(slicemode, &ppro, &rangea, &rangeb, &rangec, &extx, &exty, &extz, &origx, &origy, &origz, 
 			  maxx, minx, maxy, miny, maxz, minz, width, &k, &cutoff, &stride, pphi, &nvox);	
@@ -256,7 +256,7 @@ int main (int argc, char *argv[]) {
 	interpolate_map (&pphi2, &extx2, &exty2, &extz2, &origx2, &origy2, &origz2, 
 			 width2, width2, width2, pphi, extx, exty, extz, origx, 
 			 origy, origz, width, width, width);
-	free(pphi);
+	free_vect_and_zero_ptr(&pphi);
 	pphi = pphi2;
 	width = width2;
 	minx = 0;
@@ -358,11 +358,7 @@ int main (int argc, char *argv[]) {
 	}
 
 	/* allocate memory and initialize integer array */
-	iphi = (char *) malloc(nvox * sizeof(char));
-	if (iphi == NULL) {
-	  error_memory_allocation(44020,"voledit");
-	}
-	for (count=0;count<nvox;count++) *(iphi+count) = 0;
+	iphi = (char *) alloc_vect(nvox, sizeof(char));
 	/* find start value closest to start index */
 	pmindist = 1e20;
 	xmindist = -1;
@@ -410,11 +406,7 @@ int main (int argc, char *argv[]) {
 	}
 
 	/* allocate memory and initialize integer array */
-	iphi = (char *) malloc(nvox * sizeof(char));
-	if (iphi == NULL) {
-	  error_memory_allocation(44020,"voledit");
-	}
-	for (count=0;count<nvox;count++) *(iphi+count) = 0;
+	iphi = (char *) alloc_vect(nvox, sizeof(char));
 	/* find start value closest to start index */
 	pmindist = 1e20;
 	xmindist = -1;
@@ -506,7 +498,7 @@ int main (int argc, char *argv[]) {
 	project_map_lattice(&pphi2, maxx-minx+1, maxy-miny+1, maxz-minz+1, 
 			    origx+minx*width, origy+miny*width, origz+minz*width, width, width, width,
 			    pphi, extx, exty, extz, origx, origy, origz, width, width, width);
-	free(pphi);
+	free_vect_and_zero_ptr(&pphi);
 	pphi = pphi2;
 	update_parameters(slicemode, &ppro, &rangea, &rangeb, &rangec, &extx, &exty, &extz, &origx, &origy, &origz, 
 			  maxx, minx, maxy, miny, maxz, minz, width, &k, &cutoff, &stride, pphi, &nvox);
@@ -746,7 +738,7 @@ static void update_parameters(int slicemode, double **ppro, int *rangea, int *ra
   *stride = ceil(*rangea/100.0);
   if (*stride < ceil(*rangeb/100.0)) *stride = ceil(*rangeb/100.0);
   if (*stride < 1) *stride = 1;
-  free(*ppro);
+  free_vect_and_zero_ptr(ppro);
   do_vect(ppro,(unsigned long)(*rangea * *rangeb));
   for(i=0;i<*rangea;i++) for(j=0;j<*rangeb;j++) {
     ind2 = i + j * *rangea;
@@ -846,7 +838,7 @@ static void flood_fill_nonrecursive (double *pphi, char *iphi, double cutoff,  i
 
   LLIST *list_head, *list_tail, *list_current;
 
-  list_head       = (LLIST *) malloc(sizeof(LLIST));
+  list_head       = (LLIST *) alloc_vect(1, sizeof(LLIST));
   list_head->x    = l;
   list_head->y    = m;
   list_head->z    = n;
@@ -913,7 +905,7 @@ static void flood_fill_nonrecursive (double *pphi, char *iphi, double cutoff,  i
 
     list_current = list_head;
     list_head    = list_head->next;
-    free(list_current);
+    free_vect_and_zero_ptr(&list_current);
 
   }
 
@@ -927,7 +919,7 @@ static void flood_fill_nonrecursive_push(LLIST **tail, int x, int y, int z) {
 
   LLIST *current;
 
-  current = (LLIST *) malloc(sizeof(LLIST));
+  current = (LLIST *) alloc_vect(sizeof(LLIST), 1);
 
   current->next = NULL;
   current->x    = x;

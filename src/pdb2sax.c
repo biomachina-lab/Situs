@@ -15,6 +15,7 @@
 #include "lib_std.h"
 #include "lib_pio.h"
 #include "lib_err.h"
+#include "lib_vec.h"
 
 #define AFRAC 0.1  /* bead dens. threshold: # atoms / 1A rad. bead  */
                    /* note: the average protein has AFRAC ~ 0.5     */
@@ -81,10 +82,7 @@ int main(int argc, char *argv[]) {
     break;
   case 2:
     /* create the mass-weighted atom dataset */
-    pdbS = (PDB *) malloc((numA)*sizeof(PDB));
-    if (pdbS== NULL) {
-      error_memory_allocation(60005, "pdb2sax");
-    }
+    pdbS = (PDB *) alloc_vect((numA), sizeof(PDB));
     mindist = 1e20;
     for (i=0;i<numA;++i) {
       if ((watmode == 2)&&IsWater(pdbA,i)) continue;
@@ -160,7 +158,7 @@ int main(int argc, char *argv[]) {
     error_option(60020, "pdb2sax");
   }
   
-  free(pdbA);
+  free_vect_and_zero_ptr(&pdbA);
   
   /* measure protein extent and read radius */
   minx = 1e20; miny = 1e20; minz = 1e20; maxx = -1e20; maxy = -1e20; maxz = -1e20;
@@ -200,11 +198,7 @@ int main(int argc, char *argv[]) {
   nlatt= (unsigned long) ((c*(b+1)+b)*(a+1)+a);
 
   /* allocate grid */
-  box = (double *) malloc(nlatt * 3 * sizeof(double));
-  if (box == NULL) {
-    fprintf(stderr, "pdb2sax> Error: Could not satisfy memory allocation request [e.c. 81110]\n"); 
-    exit(81110);
-  }
+  box = (double *) alloc_vect(nlatt * 3, sizeof(double));
   
   /* initialize beads on grid that satisfy density criterion */
 

@@ -201,10 +201,7 @@ int main(int argc, char *argv[])
 
   /* now copy the useful atoms to pdb2 */
 
-  pdb2 = (PDB *) malloc(1.3 * num1 * sizeof(PDB));
-  if (pdb2 == NULL) {
-    error_memory_allocation(60005, "qpdb");
-  }
+  pdb2 = (PDB *) alloc_vect(1.3 * num1, sizeof(PDB));
   num2 = 0;
   for (i = 0; i < num1; ++i) {
     if (num2 >= 1.3 * num1) {
@@ -228,7 +225,7 @@ int main(int argc, char *argv[])
 
   /* careful!!!!!
 
-  free(pdb1);
+  free_vect_and_zero_ptr(&pdb1);
 
   pdb1 needed below for Voronoi cell output */
 

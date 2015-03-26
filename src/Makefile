@@ -59,10 +59,6 @@ SITUS_C	= map2map.c volhist.c voldiff.c \
 
 SITUS_CPP = matchpt.cpp voltrac.cpp volfltr.cpp
 
-AUX     = lib_vio.c lib_pio.c lib_std.c lib_eul.c lib_pow.c \
-          lib_pwk.c lib_rnd.c lib_vec.c lib_vwk.c lib_tim.c lib_err.c \
-	  lib_smp.c lib_mpt.cpp lib_svt.cpp lib_sba.cpp 
-
 SITUS_EXEC = $(SITUS_C:.c=) $(SITUS_CPP:.cpp=)
 
 #####
@@ -108,8 +104,8 @@ voledit:	voledit.o lib_err.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o
 qpdb:	qpdb.o lib_err.o lib_vio.o lib_pwk.o lib_std.o lib_vwk.o lib_vec.o lib_eul.o lib_rnd.o lib_vio.o
 	$(CC) qpdb.o lib_err.o lib_std.o lib_pio.o lib_pwk.o lib_vwk.o lib_vec.o lib_vio.o lib_eul.o lib_rnd.o $(LFLAGS) -o qpdb
 
-pdb2sax:	pdb2sax.o lib_err.o lib_pio.o lib_std.o
-	$(CC) pdb2sax.o lib_err.o lib_std.o lib_pio.o $(LFLAGS) -o pdb2sax
+pdb2sax:	pdb2sax.o lib_err.o lib_pio.o lib_std.o lib_vec.o
+	$(CC) pdb2sax.o lib_err.o lib_std.o lib_pio.o lib_vec.o $(LFLAGS) -o pdb2sax
 
 pdb2vol:	pdb2vol.o lib_err.o lib_pio.o lib_pwk.o lib_std.o lib_vwk.o lib_vec.o lib_eul.o lib_vio.o 
 	$(CC) pdb2vol.o lib_err.o lib_std.o lib_pio.o lib_pwk.o lib_vwk.o lib_vec.o lib_vio.o lib_eul.o $(LFLAGS) -o pdb2vol
@@ -123,8 +119,8 @@ pdbsymm:	pdbsymm.o lib_err.o lib_pio.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o
 eul2pdb:	eul2pdb.o lib_std.o lib_err.o lib_pio.o lib_pwk.o lib_eul.o lib_vec.o lib_vwk.o
 	$(CC) eul2pdb.o lib_std.o lib_err.o lib_pio.o lib_pwk.o lib_eul.o lib_vec.o lib_vwk.o $(LFLAGS) -o eul2pdb
 
-qplasty:	qplasty.o  lib_err.o lib_std.o lib_pio.o
-	$(CC) qplasty.o lib_err.o lib_std.o lib_pio.o $(LFLAGS) -o qplasty
+qplasty:	qplasty.o  lib_err.o lib_std.o lib_pio.o lib_vec.o
+	$(CC) qplasty.o lib_err.o lib_std.o lib_pio.o lib_vec.o $(LFLAGS) -o qplasty
 
 collage:	collage.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o lib_vio.o 
 	$(CC) collage.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o $(LFLAGS) $(SMPLIB) -o collage

@@ -418,10 +418,10 @@ void powell(int *pcode, double *pval_min, double *vect,
 
     if (*pval_min == last_val_min) {
       *pcode = 0;
-      free(xit);
-      free(ptt);
-      free(pt);
-      free(g_buffer_vect);
+      free_vect_and_zero_ptr(&xit);
+      free_vect_and_zero_ptr(&ptt);
+      free_vect_and_zero_ptr(&pt);
+      free_vect_and_zero_ptr(&g_buffer_vect);
       free_mat_and_zero_ptr(&xi);
       return;
     }
@@ -436,20 +436,20 @@ void powell(int *pcode, double *pval_min, double *vect,
     /* fprintf(pow_outfile,"%10.7E %d\n",(*pval_min), iteration+1); */
     if (iteration >= max_iter - 1) {
       *pcode = 1;
-      free(xit);
-      free(ptt);
-      free(pt);
-      free(g_buffer_vect);
+      free_vect_and_zero_ptr(&xit);
+      free_vect_and_zero_ptr(&ptt);
+      free_vect_and_zero_ptr(&pt);
+      free_vect_and_zero_ptr(&g_buffer_vect);
       free_mat_and_zero_ptr(&xi);
       return;
     }
 
     if (2.0 * fabs(fp - (*pval_min)) <= tolerance * (fabs(fp) + fabs(*pval_min))) {
       *pcode = 0;
-      free(xit);
-      free(ptt);
-      free(pt);
-      free(g_buffer_vect);
+      free_vect_and_zero_ptr(&xit);
+      free_vect_and_zero_ptr(&ptt);
+      free_vect_and_zero_ptr(&pt);
+      free_vect_and_zero_ptr(&g_buffer_vect);
       free_mat_and_zero_ptr(&xi);
       return;
     }
@@ -662,10 +662,10 @@ void powell_r(int *pcode, double *pval_min, double *vect,
 
     if (*pval_min == last_val_min) {
       *pcode = 0;
-      free(xit);
-      free(ptt);
-      free(pt);
-      free(scratch->buffer_vect);
+      free_vect_and_zero_ptr(&xit);
+      free_vect_and_zero_ptr(&ptt);
+      free_vect_and_zero_ptr(&pt);
+      free_vect_and_zero_ptr(&(scratch->buffer_vect));
       free_mat_and_zero_ptr(&xi);
       return;
     }
@@ -693,20 +693,20 @@ void powell_r(int *pcode, double *pval_min, double *vect,
 
     if (iteration >= max_iter - 1) {
       *pcode = 1;
-      free(xit);
-      free(ptt);
-      free(pt);
-      free(scratch->buffer_vect);
+      free_vect_and_zero_ptr(&xit);
+      free_vect_and_zero_ptr(&ptt);
+      free_vect_and_zero_ptr(&pt);
+      free_vect_and_zero_ptr(&(scratch->buffer_vect));
       free_mat_and_zero_ptr(&xi);
       return;
     }
 
     if (2.0 * fabs(fp - (*pval_min)) <= tolerance * (fabs(fp) + fabs(*pval_min))) {
       *pcode = 0;
-      free(xit);
-      free(ptt);
-      free(pt);
-      free(scratch->buffer_vect);
+      free_vect_and_zero_ptr(&xit);
+      free_vect_and_zero_ptr(&ptt);
+      free_vect_and_zero_ptr(&pt);
+      free_vect_and_zero_ptr(&(scratch->buffer_vect));
       free_mat_and_zero_ptr(&xi);
       return;
     }

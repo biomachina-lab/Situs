@@ -83,10 +83,7 @@ int main(int argc, char *argv[]) {
 	/* allocate atoms above cutoff */
 	atom_count=0;
 	for(count=0;count<nvox;count++) if (*(phi+count) >= cutdens) ++atom_count;
-	pdbH = (PDB *) malloc(atom_count * sizeof(PDB));
-	if (pdbH == NULL) {
-	  error_memory_allocation(34020, "vol2pdb");
-	}
+	pdbH = (PDB *) alloc_vect(atom_count, sizeof(PDB));
 	
 	/* now assign PDB fields */
 	atom_count = 0;

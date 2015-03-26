@@ -164,8 +164,8 @@ int main(int argc, char **argv)
   convolve_kernel_inside (&phi_fx_save, phi_ga_save, ext_ga_save, ext_ga_save, ext_ga_save, g_phi_fi, g_ext_fi);
   do_vect(&g_phi_fx,(ext_ga_save*ext_ga_save*ext_ga_save));
   shrink_to_sigma_factor (&g_phi_fx, &g_ext_fx, phi_fx_save, ext_ga_save, sigma1d, sigma_factor);
-  free(phi_ga_save);
-  free(phi_fx_save);
+  free_vect_and_zero_ptr(&phi_ga_save);
+  free_vect_and_zero_ptr(&phi_fx_save);
 
   /* zeropad low-resolution map as desired to accommodate the PDB */
 
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
   create_padded_map (&g_phi_du, &g_extx, &g_exty, &g_extz, &g_origx, &g_origy, &g_origz, &g_nvox,
                      g_phi_lo, g_extx, g_exty, g_extz, g_origx, g_origy, g_origz,
                      g_width, g_width, g_width*g_target_ani, zeropad);
-  free(g_phi_lo);
+  free_vect_and_zero_ptr(&g_phi_lo);
  
   do_vect(&g_phi_lo,g_nvox);
   cp_vect_destroy(&g_phi_lo,&g_phi_du,g_nvox);
@@ -285,7 +285,7 @@ int main(int argc, char **argv)
     g_exty_half=(g_exty-1)/2; 
     g_extz_half=(g_extz-1)/2;
     create_inside_molecule_poslist(g_phi_lo);
-    printf("collage> Powell conjugent gradient maximization.\n");
+    printf("collage> Powell conjugate gradient maximization.\n");
 
     /* set Powell start directions*/  
     do_vect(&pow_init,6*g_num_parts);
@@ -358,10 +358,10 @@ int main(int argc, char **argv)
       }
       g_pow_alg = test_pow_method;
       /* clean up scratch space */
-      free(pow_scratch->phi_hi);
-      free(pow_scratch->phi_du);
-      free(pow_scratch->pdb);
-      free(pow_scratch);
+      free_vect_and_zero_ptr(&(pow_scratch->phi_hi));
+      free_vect_and_zero_ptr(&(pow_scratch->phi_du));
+      free_vect_and_zero_ptr(&(pow_scratch->pdb));
+      free_vect_and_zero_ptr(&pow_scratch);
     }
     
     /* check if steric exclusion boosting of density, and modify g_pow_alg to select case */
@@ -469,7 +469,7 @@ int main(int argc, char **argv)
       multi_rot_euler_trans(lindex, uindex, lindex, g_pdb_original, g_pdb_save, g_best_fit[i].euler[0],g_best_fit[i].euler[1],g_best_fit[i].euler[2], g_best_fit[i].pos[0]+g_com_x[i], g_best_fit[i].pos[1]+g_com_y[i], g_target_ani*g_best_fit[i].pos[2]+g_com_z[i]);
       append_pdb(out_string, g_parts_num_atoms[i], g_pdb_save);
       lindex = uindex;
-      free(g_pdb_save);
+      free_vect_and_zero_ptr(&g_pdb_save);
     }
   }  
 
@@ -606,7 +606,7 @@ static void get_structures_and_partition (char **argv) {
 	g_com_z = (double *) realloc(g_com_z,(g_num_parts)*sizeof(double));
 	if (g_com_x== NULL || g_com_y== NULL || g_com_z== NULL) error_memory_allocation(80622, g_program);
 	calc_center (curr_pdb, curr_num_atoms, g_com_x+g_num_parts-1, g_com_y+g_num_parts-1, g_com_z+g_num_parts-1);
-	free(curr_pdb);
+	free_vect_and_zero_ptr(&curr_pdb);
 	g_parts_num_atoms = (unsigned *) realloc(g_parts_num_atoms,(g_num_parts)*sizeof(unsigned));
 	if (g_parts_num_atoms== NULL) error_memory_allocation(80623, g_program);
 	g_parts_num_atoms[g_num_parts-1] = curr_num_atoms;
@@ -628,7 +628,7 @@ static void get_structures_and_partition (char **argv) {
       g_com_z = (double *) realloc(g_com_z,(g_num_parts)*sizeof(double));
       if (g_com_x== NULL || g_com_y== NULL || g_com_z== NULL) error_memory_allocation(80625, g_program);
       calc_center (curr_pdb, curr_num_atoms, g_com_x+g_num_parts-1, g_com_y+g_num_parts-1, g_com_z+g_num_parts-1);
-      free(curr_pdb);
+      free_vect_and_zero_ptr(&curr_pdb);
       g_parts_num_atoms = (unsigned *) realloc(g_parts_num_atoms,(g_num_parts)*sizeof(unsigned));
       if (g_parts_num_atoms== NULL) error_memory_allocation(80626, g_program);
       g_parts_num_atoms[g_num_parts-1] = curr_num_atoms;
@@ -981,10 +981,10 @@ static void powell_optimization_multi (void *args, char **argv) {
 	     pow_scratch, pow_results);
 
   /* clean up scratch space */
-  free(pow_scratch->phi_hi);
-  free(pow_scratch->phi_du);
-  free(pow_scratch->pdb);
-  free(pow_scratch);
+  free_vect_and_zero_ptr(&(pow_scratch->phi_hi));
+  free_vect_and_zero_ptr(&(pow_scratch->phi_du));
+  free_vect_and_zero_ptr(&(pow_scratch->pdb));
+  free_vect_and_zero_ptr(&pow_scratch);
 
   /* manage output */
 
@@ -1090,10 +1090,10 @@ static void powell_optimization_multi (void *args, char **argv) {
   while (curr_iter != NULL) {
     last_iter = curr_iter;
     curr_iter = curr_iter->next;
-    free(last_iter->res);
-    free(last_iter);
+    free_vect_and_zero_ptr(&(last_iter->res));
+    free_vect_and_zero_ptr(&last_iter);
   }
-  free(args);
+  free_vect_and_zero_ptr(&args);
   return;
 }
 
@@ -1181,7 +1181,7 @@ static void create_inside_molecule_poslist (double *phi) {
 	  if ((check > 0)&&(mask_inside2[q] == 1)) {mask_inside2[q]=0; count++; g_inside_num--;}
 	}       
       }   
-  free(mask_inside);
+  free_vect_and_zero_ptr(&mask_inside);
   
   printf("collage> Found %d inside or buried voxels (out of a total of %lu).\n",g_inside_num,g_nvox); 
 
@@ -1204,7 +1204,7 @@ static void create_inside_molecule_poslist (double *phi) {
       }    
 
 
-  free(mask_inside2);
+  free_vect_and_zero_ptr(&mask_inside2);
 }
 
 /*====================================================================*/

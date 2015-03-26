@@ -15,6 +15,11 @@
 #include "lib_vec.h"
 #include "lib_err.h"
 
+/*
+ * Allocation and de-allocation of C arrays and matrices
+ * All arrays and matrices are initialized to zero when created
+ */
+
 /****** Following routines are for vectors and arrays of doubles ******/
 
 /*====================================================================*/
@@ -55,7 +60,7 @@ void cp_vect_destroy(double **pvect1, double **pvect2, unsigned long len)
     free(*pvect1);
   do_vect(pvect1, len);
   cp_vect(pvect1, pvect2, len);
-  free(*pvect2);
+  free_vect_and_zero_ptr(pvect2);
 }
 
 /*====================================================================*/
@@ -77,11 +82,10 @@ void *alloc_vect(unsigned int n, size_t elem_size)
   if (!pvect) {
     error_memory_allocation(99901, "lib_cvq");
   }
-
   return pvect;
-}
+};
 
-/*=============fs=======================================================*/
+/*====================================================================*/
 void free_vect_and_zero_ptr(void **pvect)
 {
   if (*pvect) {

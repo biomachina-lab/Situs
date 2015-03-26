@@ -320,14 +320,8 @@ int main(int argc, char **argv)
   do_vect(&g_phi_du, g_fftw_nvox_r2c);
   do_vect(&g_phi_hi, g_fftw_nvox_r2c);
 
-  g_fftw_grid_a = (fftw_complex *) malloc(g_fftw_nvox_c2r * sizeof(fftw_complex));
-  if (g_fftw_grid_a == NULL) {
-    error_memory_allocation(80010, g_program);
-  }
-  g_fftw_grid_b = (fftw_complex *) malloc(g_fftw_nvox_c2r * sizeof(fftw_complex));
-  if (g_fftw_grid_b == NULL) {
-    error_memory_allocation(80020, g_program);
-  }
+  g_fftw_grid_a = (fftw_complex *) alloc_vect(g_fftw_nvox_c2r, sizeof(fftw_complex));
+  g_fftw_grid_b = (fftw_complex *) alloc_vect(g_fftw_nvox_c2r, sizeof(fftw_complex));
 
   printf("colores> FFT planning...\n");
 
@@ -365,10 +359,8 @@ int main(int argc, char **argv)
               g_extx, g_exty, g_extz,
               g_phi_lo);
     /* write out the probe PDB */
-    g_pdb_move = (PDB *) malloc(g_num_atoms * sizeof(PDB));
-    if (g_pdb_move == NULL) {
-      error_memory_allocation(80110, g_program);
-    }
+    g_pdb_move = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
+
     for (i = 0; i < g_num_atoms; ++i) *(g_pdb_move + i) = *(g_pdb_original + i);
     translate(g_pdb_original, g_pdb_move, g_num_atoms, g_center_map[0], g_center_map[1], g_center_map[2]);
     write_pdb("col_probe.pdb", g_num_atoms, g_pdb_move);
@@ -382,11 +374,9 @@ int main(int argc, char **argv)
   printf("colores> Testing the maps and correlations.\n");
 
   /* create the dummy structure g_pdb_move */
-  g_pdb_move = (PDB *) malloc(g_num_atoms * sizeof(PDB));
-  if (g_pdb_move == NULL) {
-    error_memory_allocation(80110, g_program);
-  }
-  for (i = 0; i < g_num_atoms; ++i) *(g_pdb_move + i) = *(g_pdb_original + i);
+  g_pdb_move = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
+  for (i = 0; i < g_num_atoms; ++i) 
+    *(g_pdb_move + i) = *(g_pdb_original + i);
 
   /* rotate g_pdb_move (if desired), project to grid, and convolve with Gaussian */
   rot_euler(g_pdb_original, g_pdb_move, g_num_atoms, 0.0, 0.0, 0.0);
@@ -507,11 +497,7 @@ int main(int argc, char **argv)
   printf("colores> Euler angles saved in file col_eulers.dat.\n");
 
   /* initialize scoring hash table */
-  g_hash_sav = (SAV *) malloc(g_nvox * sizeof(SAV));
-
-  if (g_hash_sav == NULL) {
-    error_memory_allocation(80140, g_program);
-  }
+  g_hash_sav = (SAV *) alloc_vect(g_nvox, sizeof(SAV));
   for (m = 0; m < g_nvox; m++)  {
     (*(g_hash_sav + m)).eu = 0;
     (*(g_hash_sav + m)).score = 0.0f;
@@ -592,10 +578,7 @@ int main(int argc, char **argv)
     thread_fft_data_array[thread].idx_start = i;
     i += threads_workload[thread];
     thread_fft_data_array[thread].idx_count = i - thread_fft_data_array[thread].idx_start;
-    thread_fft_data_array[thread].results   = (FFT_RESULTS *) malloc(thread_fft_data_array[thread].idx_count * sizeof(FFT_RESULTS));
-    if (thread_fft_data_array[thread].results == NULL) {
-      error("colores> Error: Malloc for FFT_RESULTS failed\n");
-    }
+    thread_fft_data_array[thread].results = (FFT_RESULTS *) alloc_vect(thread_fft_data_array[thread].idx_count, sizeof(FFT_RESULTS));
   }
 
   /* Initialize mutexes and semaphore */
@@ -714,7 +697,7 @@ int main(int argc, char **argv)
   /* Free memory */
 
   for (thread = 0; thread < g_p_nprocs; thread++) {
-    free(thread_fft_data_array[thread].results);
+    free_vect_and_zero_ptr(&(thread_fft_data_array[thread].results));
   }
 
 #else
@@ -820,10 +803,10 @@ int main(int argc, char **argv)
 
       /* Clean up scratch space */
 
-      free(pow_scratch->phi_hi);
-      free(pow_scratch->phi_du);
-      free(pow_scratch->pdb);
-      free(pow_scratch);
+      free_vect_and_zero_ptr(&(pow_scratch->phi_hi));
+      free_vect_and_zero_ptr(&(pow_scratch->phi_du));
+      free_vect_and_zero_ptr(&(pow_scratch->pdb));
+      free_vect_and_zero_ptr(&pow_scratch);
 
     }
 
@@ -977,11 +960,7 @@ int main(int argc, char **argv)
   printf("colores> Renormalizing correlation values by highest score.\n");
 
   double *angle_map;
-  angle_map = malloc(g_extx * g_exty * g_extz * sizeof(double));
-  {
-    int i;
-    for (i = 0; i < g_extx * g_exty * g_extz; i++) angle_map[i] = 0.0;
-  }
+  angle_map = alloc_vect(g_extx * g_exty * g_extz, sizeof(double));
 
   /* write translation function and store pre-Powell lattice */
   /* note that translations need to be inverted, see search6d_fft() */
@@ -1060,17 +1039,14 @@ int main(int argc, char **argv)
                   g_hash_sav[q].score);
       }
   fclose(g_outfile);
-  free(g_hash_sav);
+  free_vect_and_zero_ptr(&g_hash_sav);
 
   /*=========================== SAVE BEST RESULTS ============================*/
 
   draw_line();
   printf("colores> Saving the best results.\n");
 
-  g_pdb_save = (PDB *) malloc(g_num_atoms * sizeof(PDB));
-  if (g_pdb_save == NULL) {
-    error_open_filename(80310, g_program, "score_fine.dat");
-  }
+  g_pdb_save = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
 
   /* now write the PDB files of the best fits */
   for (m = 0; m < g_num_explored; m++) {
@@ -1359,18 +1335,11 @@ static void *search6d_fft_par(void *thread_arg)
   do_vect(&p_phi_du, g_fftw_nvox_r2c);
   do_vect(&p_phi_hi, g_fftw_nvox_r2c);
 
-  p_pdb_move = (PDB *) malloc(g_num_atoms * sizeof(PDB));
-  if (p_pdb_move == NULL) {
-    fprintf(stderr, "colores> Error: Unable to satisfy memory allocation request [e.c. 80110]\n");
-    exit(80110);
-  }
-  for (q = 0; q < g_num_atoms; ++q) *(p_pdb_move + q) = *(g_pdb_original + q);
+  p_pdb_move = (PDB *) alloc_vect(g_num_atoms, sizeof(PDB));
+  for (q = 0; q < g_num_atoms; ++q) 
+    *(p_pdb_move + q) = *(g_pdb_original + q);
 
-  p_fftw_grid_b = (fftw_complex *) malloc(g_fftw_nvox_c2r * sizeof(fftw_complex));
-  if (p_fftw_grid_b == NULL) {
-    fprintf(stderr, "colores> Error: Unable to satisfy memory allocation request [e.c. 80020]\n");
-    exit(80020);
-  }
+  p_fftw_grid_b = (fftw_complex *) alloc_vect(g_fftw_nvox_c2r, sizeof(fftw_complex));
 
   p_fftw_plan_forward = fftw_plan_dft_r2c_3d(g_extz, g_exty, g_extx,
                         p_phi_du, (fftw_complex *) p_fftw_grid_b,
@@ -1478,7 +1447,7 @@ static void *search6d_fft_par(void *thread_arg)
 
   }
 
-  /* FreeVectAndZero memory */
+  /* Free memory */
 
   free_vect_and_zero_ptr(&p_phi_du);
   free_vect_and_zero_ptr(&p_phi_hi);
@@ -2168,10 +2137,8 @@ static void peak_extract(SAV **ccr, FIT **found_peak_final)
 
   /* save the g_num_explored highest scoring voxels so we don't filter them out by accident */
   /* allocate */
-  max_cc_peak = (FIT *) malloc(g_num_explored * sizeof(FIT));
-  if (max_cc_peak == NULL) {
-    error_memory_allocation(80600, g_program);
-  }
+  max_cc_peak = (FIT *) alloc_vect(g_num_explored, sizeof(FIT));
+
   /* initialize */
   for (peak_count = 0; peak_count < g_num_explored; peak_count++) {
     max_cc_peak[peak_count].score = -99999.0;
@@ -2306,10 +2273,7 @@ static void peak_extract(SAV **ccr, FIT **found_peak_final)
 
   /* Allocate storage for found peaks */
 
-  found_peak = (FIT *) malloc((peak_count + g_num_explored) * sizeof(FIT));
-  if (found_peak  == NULL) {
-    error_memory_allocation(80700, g_program);
-  }
+  found_peak = (FIT *) alloc_vect((peak_count + g_num_explored), sizeof(FIT));
 
   /* Now extract the peaks that were counted before */
 
@@ -2412,10 +2376,7 @@ static void peak_extract(SAV **ccr, FIT **found_peak_final)
     g_num_explored = peak_count;
   }
 
-  *(found_peak_final) = (FIT *) malloc(g_num_explored * sizeof(FIT));
-  if (found_peak_final  == NULL) {
-    error_memory_allocation(80800, g_program);
-  }
+  *(found_peak_final) = (FIT *) alloc_vect(g_num_explored, sizeof(FIT));
 
   for (r = 0; r < g_num_explored; r++) {
     *(*found_peak_final + r) = found_peak[r];
@@ -2510,11 +2471,7 @@ static void create_inside_molecule_poslist(double *phi)
   int ix2, iy2, iz2, erosion_shell_width;
   char *mask_inside, *mask_inside2;
 
-  mask_inside = (char *) malloc(g_nvox * sizeof(char));
-  if (mask_inside == NULL) {
-    error_memory_allocation(80900, g_program);
-  }
-  for (q = 0; q < g_nvox; q++) mask_inside[q] = 0;
+  mask_inside = (char *) alloc_vect(g_nvox, sizeof(char));
 
   g_inside_num = 0;
   printf("colores> Identifying inside or buried voxels...\n");
@@ -2567,11 +2524,9 @@ static void create_inside_molecule_poslist(double *phi)
 
   /* erode surface of inside subset, we want central part only */
 
-  mask_inside2 = (char *) malloc(g_nvox * sizeof(char));
-  if (mask_inside2 == NULL) {
-    error_memory_allocation(808910, g_program);
-  }
-  for (q = 0; q < g_nvox; q++) mask_inside2[q] = mask_inside[q];
+  mask_inside2 = (char *) alloc_vect(g_nvox, sizeof(char));
+  for (q = 0; q < g_nvox; q++) 
+    mask_inside2[q] = mask_inside[q];
 
   erosion_shell_width = 1;
   for (iz = 0; iz < g_extz; iz++)
@@ -2600,10 +2555,7 @@ static void create_inside_molecule_poslist(double *phi)
   printf("colores> Found %d inside or buried voxels (out of a total of %lu).\n", g_inside_num, g_nvox);
 
   /* allocate inside poslist */
-  g_inside_list = (POS *) malloc(g_inside_num * sizeof(POS));
-  if (g_inside_list == NULL) {
-    error_memory_allocation(80920, g_program);
-  }
+  g_inside_list = (POS *) alloc_vect(g_inside_num, sizeof(POS));
 
   /* now fill inside poslist */
   curr = 0;
@@ -2647,12 +2599,7 @@ static void create_inside_molecule_poslist_flipped(double *phi)
   int ix2, iy2, iz2, erosion_shell_width;
   char *mask_inside, *mask_inside2, *mask_inside3;
 
-  mask_inside = (char *) malloc(g_nvox * sizeof(char));
-  if (mask_inside == NULL) {
-    fprintf(stderr, "colores> Error: Unable to satisfy memory allocation request [e.c. 80900]\n");
-    exit(80900);
-  }
-  for (q = 0; q < g_nvox; q++) mask_inside[q] = 0;
+  mask_inside = (char *) alloc_vect(g_nvox, sizeof(char));
 
   g_inside_num_flipped = 0;
   printf("colores> Identifying inside or buried voxels and creating flipped mask...\n");
@@ -2705,12 +2652,9 @@ static void create_inside_molecule_poslist_flipped(double *phi)
 
   /* erode surface of inside subset, we want central part only */
 
-  mask_inside2 = (char *) malloc(g_nvox * sizeof(char));
-  if (mask_inside2 == NULL) {
-    fprintf(stderr, "colores> Error: Unable to satisfy memory allocation request [e.c. 808910]\n");
-    exit(808910);
-  }
-  for (q = 0; q < g_nvox; q++) mask_inside2[q] = mask_inside[q];
+  mask_inside2 = (char *) alloc_vect(g_nvox, sizeof(char));
+  for (q = 0; q < g_nvox; q++) 
+    mask_inside2[q] = mask_inside[q];
 
   erosion_shell_width = 1;
   for (iz = 0; iz < g_extz; iz++)
@@ -2739,11 +2683,7 @@ static void create_inside_molecule_poslist_flipped(double *phi)
   // ADDED LINES BEGIN (PLUS THE MASK_INSIDE3 DECLARATION ABOVE)
 
   /* mask is flipped along all three axes */
-  mask_inside3 = (char *) malloc(g_nvox * sizeof(char));
-  if (mask_inside3 == NULL) {
-    fprintf(stderr, "colores> Error: Unable to satisfy memory allocation request [e.c. 808910]\n");
-    exit(808910);
-  }
+  mask_inside3 = (char *) alloc_vect(g_nvox, sizeof(char));
   for (iz = 0; iz < g_extz; iz++)
     for (iy = 0; iy < g_exty; iy++)
       for (ix = 0; ix < g_extx; ix++) {
@@ -2758,11 +2698,7 @@ static void create_inside_molecule_poslist_flipped(double *phi)
   printf("colores> Found %d inside or buried voxels (out of a total of %lu).\n", g_inside_num_flipped, g_nvox);
 
   /* allocate inside poslist */
-  g_inside_list_flipped = (POS *) malloc(g_inside_num_flipped * sizeof(POS));
-  if (g_inside_list_flipped == NULL) {
-    fprintf(stderr, "colores> Error: Unable to satisfy memory allocation request [e.c. 80920]\n");
-    exit(80920);
-  }
+  g_inside_list_flipped = (POS *) alloc_vect(g_inside_num_flipped, sizeof(POS));
 
   /* now fill inside poslist */
   curr = 0;

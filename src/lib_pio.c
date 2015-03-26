@@ -22,9 +22,9 @@
 /* reads atomic entries from PDB file and assigns atom mass, no stdout */ 
 void read_pdb_silent(char *file_name, unsigned *num_atoms, PDB **in_pdb) {
 	PDB *new_pdb; 
-	FILE*fin;
-	char	line[101];
-	char	field00[7], field01[6], field02[2], field03[3], field04[3],
+	FILE *fin;
+	char line[101];
+	char field00[7], field01[6], field02[2], field03[3], field04[3],
 		field05[2], field06[5], field08[2], field09[5],
 		field10[2], field11[4], field12[9], field13[9], field14[9],
 		field15[7], field16[7], field17[2], field18[4], field19[3],
@@ -60,11 +60,7 @@ void read_pdb_silent(char *file_name, unsigned *num_atoms, PDB **in_pdb) {
 	rewind(fin);
 	
 	/* allocate memory */
-	new_pdb = (PDB *) malloc((atom_count)*sizeof(PDB) );
-	if (new_pdb == NULL) {
-		error_memory_allocation(12130, program);
-	}
-	
+	new_pdb = (PDB *) alloc_vect(atom_count, sizeof(PDB));
 	/* now read fields */
 	i = 0;
 	for(;;) {
