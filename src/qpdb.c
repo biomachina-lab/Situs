@@ -17,7 +17,6 @@
 #include "lib_rnd.h"
 #include "lib_pwk.h"
 #include "lib_err.h"
-#include "vqdefs.h"
 
 #define SEED 256                /* seed for random number generator */
 #define FLENGTH 1000            /* file name length */

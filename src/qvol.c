@@ -18,7 +18,6 @@
 #include "lib_vio.h"
 #include "lib_vwk.h"
 #include "lib_rnd.h"
-#include "vqdefs.h"
 
 #define NCONSTR 1000                 /* max. number of constraints  */
 #define SEED 7566                    /* for random number generator */

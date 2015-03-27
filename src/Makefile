@@ -80,7 +80,7 @@ default: all
 
 all: FFTW3 $(SITUS_EXEC)
 
-map2map:	map2map.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o 
+map2map:	map2map.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o
 	$(CC) map2map.o lib_vio.o lib_vwk.o lib_vec.o  lib_std.o lib_err.o $(LFLAGS) -o map2map
 
 volhist:	volhist.o lib_err.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o 
@@ -110,7 +110,7 @@ pdb2sax:	pdb2sax.o lib_err.o lib_pio.o lib_std.o lib_vec.o
 pdb2vol:	pdb2vol.o lib_err.o lib_pio.o lib_pwk.o lib_std.o lib_vwk.o lib_vec.o lib_eul.o lib_vio.o 
 	$(CC) pdb2vol.o lib_err.o lib_std.o lib_pio.o lib_pwk.o lib_vwk.o lib_vec.o lib_vio.o lib_eul.o $(LFLAGS) -o pdb2vol
 
-vol2pdb:	vol2pdb.o lib_err.o lib_pio.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o 
+vol2pdb:	vol2pdb.o lib_err.o lib_pio.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o
 	$(CC) vol2pdb.o lib_err.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_vio.o $(LFLAGS) -o vol2pdb
 
 pdbsymm:	pdbsymm.o lib_err.o lib_pio.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o
@@ -175,8 +175,8 @@ veryclean:	clean
 	$(RM) -r $(FFTDIR)/lib $(FFTDIR)/bin $(FFTDIR)/include \
 		$(FFTDIR)/share
 
-.c.o:
+.c.o:	situs.h
 	$(CC) $(CFLAGS) $(SMP) $(OMP) -c $(SRC_DIR)/$<
 
-.cpp.o:
+.cpp.o:	situs.h
 	$(CXX) $(XFLAGS) $(SMP) $(OMP) -c $(SRC_DIR)/$<

@@ -29,28 +29,45 @@
 /* as of 2.7, used in colores, collage, eul2pdb, and lib_eul: */
 #define ROT_CONV (PI/180.0)
 
-/* widely used in all PDB handling C programs */
-typedef struct {        /* 76-byte struct */
-  char  recd[7];        /* bytes 0 -  6; 7 = pad*/
-  int   serial;         /*       8 - 11 */
-  char  type[3];        /*      12 - 14 */
-  char  loc[3];         /*      15 - 17 */
-  char  alt[2];         /*      18 - 19 */
-  char  res[5];         /*      20 - 24 */
-  char  chain[2];       /*      25 - 26; 27 = pad */
-  int   seq;            /*      28 - 31 */
-  char  icode[2];       /*      32 - 33; 34-35 = pad */
-  float x;              /*      36 - 39 */
-  float y;              /*      40 - 43 */
-  float z;              /*      44 - 47 */
-  float occupancy;      /*      48 - 51 */
-  float beta;           /*      52 - 55 */
-  int   footnote;       /*      56 - 59 */
-  char  segid[5];       /*      60 - 64 */
-  char  element[3];     /*      65 - 67 */
-  char  charge[3];      /*      68 - 70; 71 = pad */
-  float weight;         /* mass 72 - 75 */
+/*
+ * PDB structure... widely used in Situs C programs.
+ * Note: members of this structure are NOT in the same order as in the
+ *       ASCII PDB files. This saves 4 bytes per structure.
+ */
+typedef struct {        /* 72-byte struct */
+  int   serial;         /*  bytes 0 -  3 */
+  int   seq;            /*        4 -  7 */
+  float x;              /*        8 - 11 */
+  float y;              /*       12 - 15 */
+  float z;              /*       16 - 19 */
+  float occupancy;      /*       20 - 23 */
+  float beta;           /*       24 - 27 */
+  int   footnote;       /*       28 - 31 */
+  float weight;         /*       32 - 35 */
+  char  recd[7];        /*       36 - 42 */
+  char  type[3];        /*       43 - 45 */
+  char  loc[3];         /*       46 - 48 */
+  char  alt[2];         /*       49 - 50 */
+  char  res[5];         /*       51 - 55 */
+  char  chain[2];       /*       56 - 57 */
+  char  icode[2];       /*       58 - 59 */
+  char  segid[5];       /*       60 - 64 */
+  char  element[3];     /*       65 - 67 */
+  char  charge[3];      /*       68 - 70;*/
+  char  padding;        /*            71 */
 } PDB;
+
+
+/********************************************************************
+ * NN / Codebook storage definitions for qpdb/qvol programs only    *
+ ********************************************************************/
+
+#define SMAXS 100000  /* # of neural gas iteration steps            */
+#define MAXCYCLE 8    /* max # of cycles in cluster analysis        */
+#define NNMIN 2       /* minimum possible # of codebook vectors     */
+#define MAXPDB 100000 /* maximum number of lines in pdb file        */
+
+typedef double Rseq3[3];
 
 #endif
 
