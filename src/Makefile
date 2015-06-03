@@ -1,5 +1,5 @@
 #####
-# Makefile for Situs 2.7
+# Makefile for Situs 2.8
 #####
 
 SRC_DIR	= .
@@ -52,7 +52,7 @@ OMPLIB     = -lgomp
 #####
 
 SITUS_C	= map2map.c volhist.c voldiff.c \
-			qvol.c qpdb.c pdb2sax.c \
+			quanvol.c quanpdb.c pdb2sax.c \
 			pdb2vol.c vol2pdb.c colores.c \
 			voledit.c collage.c pdbsymm.c eul2pdb.c \
 			qplasty.c volaver.c volmult.c
@@ -95,14 +95,14 @@ volaver:	volaver.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o
 volmult:	volmult.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o  
 	$(CC) volmult.o lib_err.o lib_vwk.o lib_vec.o lib_std.o lib_vio.o $(LFLAGS) -o volmult
 
-qvol:		qvol.o lib_err.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_vio.o
-	$(CC) qvol.o lib_vio.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_err.o $(LFLAGS) -o qvol
+quanvol:	quanvol.o lib_err.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_vio.o
+	$(CC) quanvol.o lib_vio.o lib_pio.o lib_std.o lib_rnd.o lib_vec.o lib_vwk.o lib_err.o $(LFLAGS) -o quanvol
 
 voledit:	voledit.o lib_err.o lib_std.o lib_vwk.o lib_vec.o lib_vio.o  
 	$(CC) voledit.o lib_vio.o lib_std.o lib_vwk.o lib_vec.o lib_err.o $(LFLAGS) -o voledit
 
-qpdb:	qpdb.o lib_err.o lib_vio.o lib_pwk.o lib_std.o lib_vwk.o lib_vec.o lib_eul.o lib_rnd.o lib_vio.o
-	$(CC) qpdb.o lib_err.o lib_std.o lib_pio.o lib_pwk.o lib_vwk.o lib_vec.o lib_vio.o lib_eul.o lib_rnd.o $(LFLAGS) -o qpdb
+quanpdb:	quanpdb.o lib_err.o lib_vio.o lib_pwk.o lib_std.o lib_vwk.o lib_vec.o lib_eul.o lib_rnd.o lib_vio.o
+	$(CC) quanpdb.o lib_err.o lib_std.o lib_pio.o lib_pwk.o lib_vwk.o lib_vec.o lib_vio.o lib_eul.o lib_rnd.o $(LFLAGS) -o quanpdb
 
 pdb2sax:	pdb2sax.o lib_err.o lib_pio.o lib_std.o lib_vec.o
 	$(CC) pdb2sax.o lib_err.o lib_std.o lib_pio.o lib_vec.o $(LFLAGS) -o pdb2sax

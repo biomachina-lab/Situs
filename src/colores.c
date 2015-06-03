@@ -2,7 +2,7 @@
 *                           C O L O R E S                            *
 **********************************************************************
 * Program is part of the Situs package URL: situs.biomachina.org     *
-* (c) Pablo Chacon, Jochen Heyd, Valerio Mariani, John Heumann,  and *
+* (c) Pablo Chacon, Jochen Heyd, Valerio Mariani, John Heumann, and  *
 * Willy Wriggers 2001-2015                                           *
 **********************************************************************
 *                                                                    *

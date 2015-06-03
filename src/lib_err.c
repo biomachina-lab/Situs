@@ -2,7 +2,7 @@
 *                           L I B _ E R R                            *
 **********************************************************************
 * Library is part of the Situs package URL: situs.biomachina.org     *
-* (c) Paul Boyle and Mirabela Rusu, 2004-2011                        *
+* (c) Paul Boyle and Mirabela Rusu, 2004-2015                        *
 **********************************************************************
 *                                                                    *
 *   Auxiliary program for producing error messages to the user       *
@@ -81,18 +81,6 @@ void error_no_density(int error_number, char *program, int i)
 void error_reading_constraints(int error_number, char *program, int numshake, char *con_file)
 {
   fprintf(stderr, "%s> Error: Can't complete reading %d. constraint entry in file %s [e.c. %d]\n", program, numshake, con_file, error_number);
-  exit(error_number);
-}
-
-void error_atoms_exceed(int error_number, char *program)
-{
-  fprintf(stderr, "%s> Error: Internal number of atoms exceed MAXPDB [e.c. %d]\n", program, error_number);
-  exit(error_number);
-}
-
-void error_atoms_too_small(int error_number, char *program)
-{
-  fprintf(stderr, "%s> Error: Internal number of atoms too small [e.c. %d]\n", program, error_number);
   exit(error_number);
 }
 
@@ -329,14 +317,6 @@ void error_kabsch(int error_number, char *program)
 void error_codebook_range(int error_number, char *program)
 {
   fprintf(stderr, "%s> Error: number of codebook vectors out of range [e.c. %d]\n", program, error_number);
-  exit(error_number);
-}
-void error_file_constraints(int error_number, char *program, char *con_file)
-{
-  fprintf(stderr, "%s> Error: There are additional (unread) constraints in file %s [e.c. %d]\n", program, con_file, error_number);
-  fprintf(stderr, "%s> Edit file %s to remove any redundant constraints and restart program.\n", program, con_file);
-  fprintf(stderr, "%s> Constraints are redundant e.g. if the connectivity network is over-determined.\n", program);
-  fprintf(stderr, "%s> If you rule out this possibility, try to increase the NCONSTR constant in qvol.c.\n", program);
   exit(error_number);
 }
 

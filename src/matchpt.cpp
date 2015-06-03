@@ -2,7 +2,7 @@
 *                          M A T C H P T                             *
 **********************************************************************
 * Program is part of the Situs package URL: situs.biomachina.org     *
-* (c) Stefan Birmanns and Willy Wriggers, 2009 - 2011                *
+* (c) Stefan Birmanns and Willy Wriggers, 2009 - 2015                *
 **********************************************************************
 *                                                                    *
 * "matchpoint": Next generation point cloud matching tool            *
@@ -68,13 +68,13 @@ int main(int argc, char *argv[])
     cout << "_______________________________________________________________________________" << endl;
     MPTO << "USAGE:   matchpt file1 file2 file3 file4 [options]" << endl;
     MPTO << endl;
-    MPTO << "  file1: inputfile 1, Codebook vectors from qvol in PDB format." << endl;
+    MPTO << "  file1: inputfile 1, Codebook vectors from quanvol in PDB format." << endl;
     MPTO << "         Use NONE if the codebook vectors should be calculated within matchpt." << endl;
     MPTO << "         In that case matchpt will compute and match a series of vector sets and will return" << endl;
     MPTO << "         the result with the smallest RMSD. File 3 also has to be set to NONE." << endl;
     MPTO << "  file2: inputfile 2, Density map." << endl;
     MPTO << "         Use NONE if no correlation calculation desired." << endl;
-    MPTO << "  file3: inputfile 3, Codebook vectors from qpdb in PDB format." << endl;
+    MPTO << "  file3: inputfile 3, Codebook vectors from quanpdb in PDB format." << endl;
     MPTO << "         Use NONE if the codebook vectors should be calculated within matchpt." << endl;
     MPTO << "  file4: inputfile 4, High-resolution structure in PDB format."  << endl;
     MPTO << "         Use NONE if only the codebook vectors should be matched." << endl;
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
   // load map cv
   pointcloud oVOL_CV;
   if (strcmp("NONE", argv[1]) != 0 && strcmp("none", argv[1]) != 0) {
-    MPTO << "Loading qvol codebook vector file: " << argv[1] << endl;
+    MPTO << "Loading quanvol codebook vector file: " << argv[1] << endl;
     oVOL_CV.loadPDB(argv[1]);
     if (oVOL_CV.size() == 0) {
       MPTO << "Error: Failed to load file " << argv[1] << endl;
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
   // load atomic cv
   pointcloud oPDB_CV;
   if (strcmp("NONE", argv[3]) != 0 && strcmp("none", argv[3]) != 0) {
-    MPTO << "Loading qpdb codebook vector file: " << argv[3] << endl;
+    MPTO << "Loading quanpdb codebook vector file: " << argv[3] << endl;
     oPDB_CV.loadPDB(argv[3]);
     if (oPDB_CV.size() == 0) {
       MPTO << "Error: Failed to load file " << argv[3] << endl;

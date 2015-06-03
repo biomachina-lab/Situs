@@ -1,8 +1,8 @@
 /*********************************************************************
 *                           s i t u s . h                            *
 **********************************************************************
-* Header file for Situs C programs     URL: situs.biomachina.org     *
-* (c) Willy Wriggers, Paul Boyle, and Pablo Chacon, 1998-2011        *
+* Header file for Situs C programs (c) Willy Wriggers, 1998-2015     *
+* URL: situs.biomachina.org                                          *
 **********************************************************************
 * See legal statement for terms of distribution                      *
 *********************************************************************/
@@ -23,17 +23,15 @@
 #ifndef SITUS_H
 #define SITUS_H
 
-/* as of 2.7, used in colores, collage, eul2pdb, pdbsymm, lib_vio, and lib_eul: */
+/* used in colores, collage, eul2pdb, pdbsymm, lib_vio, and lib_eul: */
 #define PI 3.14159265358979323846
 
-/* as of 2.7, used in colores, collage, eul2pdb, and lib_eul: */
+/* used in colores, collage, eul2pdb, and lib_eul: */
 #define ROT_CONV (PI/180.0)
 
-/*
- * PDB structure... widely used in Situs C programs.
+/* PDB structure. Widely used in Situs C programs.
  * Note: members of this structure are NOT in the same order as in the
- *       ASCII PDB files. This saves 4 bytes per structure.
- */
+ * ASCII PDB files. This saves 4 bytes per structure. */
 typedef struct {        /* 72-byte struct */
   int   serial;         /*  bytes 0 -  3 */
   int   seq;            /*        4 -  7 */
@@ -56,18 +54,6 @@ typedef struct {        /* 72-byte struct */
   char  charge[3];      /*       68 - 70;*/
   char  padding;        /*            71 */
 } PDB;
-
-
-/********************************************************************
- * NN / Codebook storage definitions for qpdb/qvol programs only    *
- ********************************************************************/
-
-#define SMAXS 100000  /* # of neural gas iteration steps            */
-#define MAXCYCLE 8    /* max # of cycles in cluster analysis        */
-#define NNMIN 2       /* minimum possible # of codebook vectors     */
-#define MAXPDB 100000 /* maximum number of lines in pdb file        */
-
-typedef double Rseq3[3];
 
 #endif
 
