@@ -549,7 +549,6 @@ int main(int argc, char *argv[])
 
   if (aMatches.size() > 0) {
 
-    iRealSolutions = iSolutions;
     if (iSolutions < aMatches.size()) iRealSolutions = iSolutions;
     else iRealSolutions = aMatches.size();
     if (iRealSolutions == 1) sprintf(pStr, " solution. ");
@@ -616,7 +615,7 @@ int main(int argc, char *argv[])
         aCClist.push_back(oVOL.correlation(oiTrans, fResolution));
       }
       if (iranking == 1 || iranking == 3 || iranking == 5) {
-        for (unsigned int i = 0; i < iSolutions; i++) {
+        for (unsigned int i = 0; i < iRealSolutions; i++) {
           double CCI = aCClist[lindex[i]];
           for (unsigned int j = i + 1; j < aMatches.size(); j++) {
             double CCJ = aCClist[lindex[j]];
@@ -632,7 +631,7 @@ int main(int argc, char *argv[])
     }
 
     // write output following (possibly partially sorted) lindex
-    for (unsigned int i = 0; i < aMatches.size() && i < iSolutions; i++) {
+    for (unsigned int i = 0; i < iRealSolutions; i++) {
 
       // output file
       if (oPDB.size() > 0) {
