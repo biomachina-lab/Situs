@@ -115,7 +115,7 @@ static int g_p_nprocs;                       /* number of processors */
 static pthread_mutex_t g_p_fft_score_mutex;  /* mutex for FFT score update */
 static pthread_mutex_t g_p_fft_log_mutex;    /* mutex for FFT log update */
 static pthread_mutex_t g_p_fft_status_mutex; /* semaphore for FFT status */
-static pthread_mutex_t g_p_fft_plan_mutex;   /* semaphore for FFTW planner */
+static pthread_mutex_t g_p_fft_plan_mutex;   /* mutex for FFTW planner */
 static pthread_cond_t  g_p_fft_status_cond;  /* semaphore for FFT status */
 static int             g_p_fft_status_pred;  /* count of FFTs performed */
 static int             g_p_fft_status_count; /* count of FFTs performed */
@@ -588,19 +588,23 @@ int main(int argc, char **argv)
 
   rc = pthread_mutex_init(&g_p_fft_score_mutex, NULL);
   if (rc != 0) {
-    error("colores> Error: pthread_mutex_init for g_p_fft_score_mutex failed\n");
+    error("colores> Error: init failed for g_p_fft_score_mutex\n");
   }
   rc = pthread_mutex_init(&g_p_fft_log_mutex, NULL);
   if (rc != 0) {
-    error("colores> Error: pthread_mutex_init for g_p_fft_log_mutex failed\n");
+    error("colores> Error: init failed for g_p_fft_log_mutex\n");
   }
   rc = pthread_mutex_init(&g_p_fft_status_mutex, NULL);
   if (rc != 0) {
-    error("colores> Error: pthread_mutex_init for g_p_fft_status_mutex failed\n");
+    error("colores> Error: init failed for g_p_fft_status_mutex\n");
+  }
+  rc = pthread_mutex_init(&g_p_fft_plan_mutex, NULL);
+  if (rc != 0) {
+    error("colores> Error: init failed for g_p_fft_plan_mutex\n");
   }
   rc = pthread_cond_init(&g_p_fft_status_cond, NULL);
   if (rc != 0) {
-    error("colores> Error: pthread_cond_init for g_p_fft_status_cond failed\n");
+    error("colores> Error: init failed for g_p_fft_status_cond\n");
   }
   g_p_fft_status_count = 0;
   g_p_fft_status_pred  = 0;
@@ -621,17 +625,17 @@ int main(int argc, char **argv)
 
     rc = pthread_mutex_lock(&g_p_fft_status_mutex);
     if (rc != 0) {
-      error("colores> Error: pthread_mutex_lock for g_p_fft_status_mutex failed\n");
+      error("colores> Error: lock failed for g_p_fft_status_mutex\n");
     }
     while (g_p_fft_status_pred == 0) {
       rc = pthread_cond_wait(&g_p_fft_status_cond, &g_p_fft_status_mutex);
       if (rc != 0) {
-        error("colores> Error: pthread_cond_wait for g_p_fft_status_cond failed\n");
+        error("colores> Error: wait failed for g_p_fft_status_cond\n");
       }
     }
     rc = pthread_mutex_unlock(&g_p_fft_status_mutex);
     if (rc != 0) {
-      error("colores> Error: pthread_mutex_unlock for g_p_fft_status_mutex failed\n");
+      error("colores> Error: unlock failed for g_p_fft_status_mutex\n");
     }
     g_p_fft_status_pred--;
 
@@ -666,19 +670,23 @@ int main(int argc, char **argv)
 
   rc = pthread_mutex_destroy(&g_p_fft_score_mutex);
   if (rc != 0) {
-    error("colores> Error: pthread_mutex_destroy for g_p_fft_score_mutex failed\n");
+    error("colores> Error: destroy failed for g_p_fft_score_mutex\n");
   }
   rc = pthread_mutex_destroy(&g_p_fft_log_mutex);
   if (rc != 0) {
-    error("colores> Error: pthread_mutex_destroy for g_p_fft_log_mutex failed\n");
+    error("colores> Error: destroy failed for g_p_fft_log_mutex\n");
   }
   rc = pthread_mutex_destroy(&g_p_fft_status_mutex);
   if (rc != 0) {
-    error("colores> Error: pthread_mutex_destroy for g_p_fft_status_mutex failed\n");
+    error("colores> Error: destroy failed for g_p_fft_status_mutex\n");
+  }
+  rc = pthread_mutex_destroy(&g_p_fft_plan_mutex);
+  if (rc != 0) {
+    error("colores> Error: destroy failed for g_p_fft_plan_mutex\n");
   }
   rc = pthread_cond_destroy(&g_p_fft_status_cond);
   if (rc != 0) {
-    error("colores> Error: pthread_cond_destroy for g_p_fft_status_cond failed\n");
+    error("colores> Error: destroy failed for g_p_fft_status_cond\n");
   }
 
   fftw_cleanup_threads();
@@ -861,7 +869,7 @@ int main(int argc, char **argv)
       /* Initialize printing mutex */
       rc = pthread_mutex_init(&g_p_pow_print_mutex, NULL);
       if (rc != 0) {
-        error("colores> Error: pthread_mutex_init for g_p_pow_print_mutex failed\n");
+        error("colores> Error: init failed for g_p_pow_print_mutex\n");
       }
     }
 #endif
@@ -1347,7 +1355,7 @@ static void *search6d_fft_par(void *thread_arg)
   p_fftw_grid_b = (fftw_complex *) alloc_vect(g_fftw_nvox_c2r, sizeof(fftw_complex));
 
   if (pthread_mutex_lock(&g_p_fft_plan_mutex)) {
-    error("colores> Error: lock failed for g_p_fft_plan_mutex!\n");
+    error("colores> Error: lock failed for g_p_fft_plan_mutex\n");
   }
   p_fftw_plan_forward = fftw_plan_dft_r2c_3d(g_extz, g_exty, g_extx,
                         p_phi_du, (fftw_complex *) p_fftw_grid_b,
@@ -1356,7 +1364,7 @@ static void *search6d_fft_par(void *thread_arg)
                         (fftw_complex *) p_fftw_grid_b, p_phi_hi,
                         FFTW_ESTIMATE);
   if (pthread_mutex_unlock(&g_p_fft_plan_mutex)) {
-    error("colores> Error: unlock failed for g_p_fft_plan_mutex!\n");
+    error("colores> Error: unlock failed for g_p_fft_plan_mutex\n");
   }
 
   /* Do actual work */
@@ -1399,7 +1407,7 @@ static void *search6d_fft_par(void *thread_arg)
       if (curr_score > g_hash_sav[q].score) { /* Check first */
         rc = pthread_mutex_lock(&g_p_fft_score_mutex);
         if (rc != 0) {
-          error("colores> Error: pthread_mutex_lock for g_p_fft_score_mutex failed\n");
+          error("colores> Error: lock failed for g_p_fft_score_mutex\n");
         }
         if (curr_score > g_hash_sav[q].score) { /* Check again since it might have changed */
           g_hash_sav[q].score = curr_score;
@@ -1407,7 +1415,7 @@ static void *search6d_fft_par(void *thread_arg)
         }
         rc = pthread_mutex_unlock(&g_p_fft_score_mutex);
         if (rc != 0) {
-          error("colores> Error: pthread_mutex_unlock for g_p_fft_score_mutex failed\n");
+          error("colores> Error: unlock failed for g_p_fft_score_mutex\n");
         }
       }
       if (curr_score > max_score) {
@@ -1443,17 +1451,17 @@ static void *search6d_fft_par(void *thread_arg)
 
     rc = pthread_mutex_lock(&g_p_fft_status_mutex);
     if (rc != 0) {
-      error("colores> Error: pthread_mutex_lock for g_p_fft_status_mutex failed\n");
+      error("colores> Error: lock failed for g_p_fft_status_mutex\n");
     }
     g_p_fft_status_pred++;
     g_p_fft_status_count++;
     rc = pthread_cond_signal(&g_p_fft_status_cond);
     if (rc != 0) {
-      error("colores> Error: pthread_mutex_lock for g_p_fft_status_mutex failed\n");
+      error("colores> Error: signal failed for g_p_fft_status_cond\n");
     }
     rc = pthread_mutex_unlock(&g_p_fft_status_mutex);
     if (rc != 0) {
-      error("colores> Error: pthread_mutex_lock for g_p_fft_status_mutex failed\n");
+      error("colores> Error: unlock failed for g_p_fft_status_mutex\n");
     }
 
   }
@@ -1544,7 +1552,7 @@ static void powell_optimization(void *args)
   if (g_p_nprocs > 1) {
     rc = pthread_mutex_lock(&arguments->print_mutex);
     if (rc != 0) {
-      error("colores> Error: pthread_mutex_lock for arguments->print_mutex failed\n");
+      error("colores> Error: lock failed for arguments->print_mutex failed\n");
     }
   }
 #endif
@@ -1636,7 +1644,7 @@ static void powell_optimization(void *args)
   if (g_p_nprocs > 1) {
     rc = pthread_mutex_unlock(&arguments->print_mutex);
     if (rc != 0) {
-      error("colores> Error: pthread_mutex_unlock for arguments->print_mutex failed\n");
+      error("colores> Error: unlock failed for arguments->print_mutex failed\n");
     }
   }
 #endif
