@@ -41,9 +41,9 @@
 **/pdb2sax
 **/pdb2vol
 **/pdbsymm
-**/qpdb
+**/quanpdb
 **/qplasty
-**/qvol
+**/quanvol
 **/vol2pdb
 **/volaver
 **/voldiff
