@@ -331,8 +331,6 @@ int main(int argc, char **argv)
    * for each input/output pair, and overwrites those arrays during
    * planning, so we reinitialize afterwards.
    */
-  fftw_init_threads();
-  fftw_plan_with_nthreads(1); /* Single thread individual ffts */
   g_fftw_plan_fwd_du = fftw_plan_dft_r2c_3d(g_extz, g_exty, g_extx,
                        g_phi_du, (fftw_complex *) g_fftw_grid_b,
                        FFTW_ESTIMATE);
@@ -688,8 +686,6 @@ int main(int argc, char **argv)
   if (rc != 0) {
     error("colores> Error: destroy failed for g_p_fft_status_cond\n");
   }
-
-  fftw_cleanup_threads();
 
   /* Write output */
 

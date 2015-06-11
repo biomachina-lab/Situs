@@ -14,7 +14,6 @@ FFTDIR = ../fftw3
 FFTLIB = $(FFTDIR)/lib/libfftw3.a
 FFTWREV = fftw-3.3.4
 FFTWMAKEFILE = $(FFTDIR)/$(FFTWREV)/Makefile
-FFTWTHREADLIB = $(FFTDIR)/lib/libfftw3_threads.a
 
 
 #####
@@ -124,8 +123,8 @@ qplasty:	qplasty.o  lib_err.o lib_std.o lib_pio.o lib_vec.o
 collage:	collage.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o lib_vio.o 
 	$(CC) collage.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o $(LFLAGS) $(SMPLIB) -o collage
 
-colores:	colores.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o lib_vio.o $(FFTWTHREADLIB) $(FFTLIB)
-	$(CC) colores.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o $(FFTWTHREADLIB) $(FFTLIB) $(SMPLIB) $(OMPLIB) $(LFLAGS) -o colores
+colores:	colores.o lib_std.o lib_pio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o lib_vio.o $(FFTLIB)
+	$(CC) colores.o lib_std.o lib_pio.o lib_vio.o lib_vwk.o lib_vec.o lib_rnd.o lib_pwk.o lib_pow.o lib_err.o lib_eul.o lib_tim.o lib_smp.o $(FFTLIB) $(SMPLIB) $(OMPLIB) $(LFLAGS) -o colores
 
 matchpt:	matchpt.o lib_mpt.o 
 	$(CXX) matchpt.o lib_mpt.o lib_vio.o lib_pio.o lib_vwk.o lib_vec.o lib_std.o lib_err.o $(LFLAGS) $(OMPLIB) -o matchpt
@@ -140,14 +139,12 @@ volfltr:	volfltr.o lib_sba.o lib_svt.o
 
 FFTW3:		$(FFTLIB)
 
-FFTWTHREADLIB:	$(FFTLIB)
-
 $(FFTLIB):	$(FFTWMAKEFILE)	
 	$(MAKE) -C $(FFTDIR)/$(FFTWREV) install
 
 $(FFTWMAKEFILE):	$(FFTDIR)/$(FFTWREV)/Makefile.in
 	cd $(FFTDIR)/$(FFTWREV) && \
-	./configure --prefix=`pwd`/../../fftw3 --enable-threads; \
+	./configure --prefix=`pwd`/../../fftw3; \
 	touch doc/fftw3.info*; \
 
 install:	$(SITUS_EXEC)
