@@ -115,6 +115,7 @@ static int g_p_nprocs;                       /* number of processors */
 static pthread_mutex_t g_p_fft_score_mutex;  /* mutex for FFT score update */
 static pthread_mutex_t g_p_fft_log_mutex;    /* mutex for FFT log update */
 static pthread_mutex_t g_p_fft_status_mutex; /* semaphore for FFT status */
+static pthread_mutex_t g_p_fft_plan_mutex;   /* semaphore for FFTW planner */
 static pthread_cond_t  g_p_fft_status_cond;  /* semaphore for FFT status */
 static int             g_p_fft_status_pred;  /* count of FFTs performed */
 static int             g_p_fft_status_count; /* count of FFTs performed */
@@ -330,6 +331,8 @@ int main(int argc, char **argv)
    * for each input/output pair, and overwrites those arrays during
    * planning, so we reinitialize afterwards.
    */
+  fftw_init_threads();
+  fftw_plan_with_nthreads(1); /* Single thread individual ffts */
   g_fftw_plan_fwd_du = fftw_plan_dft_r2c_3d(g_extz, g_exty, g_extx,
                        g_phi_du, (fftw_complex *) g_fftw_grid_b,
                        FFTW_ESTIMATE);
@@ -677,6 +680,8 @@ int main(int argc, char **argv)
   if (rc != 0) {
     error("colores> Error: pthread_cond_destroy for g_p_fft_status_cond failed\n");
   }
+
+  fftw_cleanup_threads();
 
   /* Write output */
 
@@ -1341,12 +1346,18 @@ static void *search6d_fft_par(void *thread_arg)
 
   p_fftw_grid_b = (fftw_complex *) alloc_vect(g_fftw_nvox_c2r, sizeof(fftw_complex));
 
+  if (pthread_mutex_lock(&g_p_fft_plan_mutex)) {
+    error("colores> Error: lock failed for g_p_fft_plan_mutex!\n");
+  }
   p_fftw_plan_forward = fftw_plan_dft_r2c_3d(g_extz, g_exty, g_extx,
                         p_phi_du, (fftw_complex *) p_fftw_grid_b,
                         FFTW_ESTIMATE);
   p_fftw_plan_reverse = fftw_plan_dft_c2r_3d(g_extz, g_exty, g_extx,
                         (fftw_complex *) p_fftw_grid_b, p_phi_hi,
                         FFTW_ESTIMATE);
+  if (pthread_mutex_unlock(&g_p_fft_plan_mutex)) {
+    error("colores> Error: unlock failed for g_p_fft_plan_mutex!\n");
+  }
 
   /* Do actual work */
 
@@ -1453,10 +1464,16 @@ static void *search6d_fft_par(void *thread_arg)
   free_vect_and_zero_ptr(&p_phi_hi);
   free_vect_and_zero_ptr(&p_pdb_move);
   free_vect_and_zero_ptr(&p_fftw_grid_b);
+  if (pthread_mutex_lock(&g_p_fft_plan_mutex)) {
+    error("colores> Error: lock failed for g_p_fft_plan_mutex!\n");
+  }
+  fftw_destroy_plan(p_fftw_plan_forward);
+  fftw_destroy_plan(p_fftw_plan_reverse);
+  if (pthread_mutex_unlock(&g_p_fft_plan_mutex)) {
+    error("colores> Error: unlock failed for g_p_fft_plan_mutex!\n");
+  }
 
   pthread_exit(0);
-
-  return (void *) NULL;
 }
 #endif
 
